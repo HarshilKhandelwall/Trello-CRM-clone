@@ -1,0 +1,84 @@
+/* Card Modal - Exact Stitch Match (max-w-4xl) */
+
+.card-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* bg-black/60 */
+    backdrop-filter: blur(4px);
+    /* backdrop-blur-sm */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2.5rem 1rem;
+    /* p-10 px-4 on md */
+    overflow-y: auto;
+    z-index: var(--z-modal);
+    animation: fadeIn 200ms var(--ease-out);
+}
+
+.card-modal {
+    width: 100%;
+    max-width: 56rem;
+    /* max-w-4xl (896px) - EXACT STITCH */
+    background-color: white;
+    color: var(--text-primary);
+    border-radius: 0.75rem;
+    /* rounded-xl (12px) */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    /* shadow-2xl */
+    position: relative;
+    animation: scaleIn 200ms var(--ease-out);
+    margin: auto;
+}
+
+.card-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--duration-fast) var(--ease-out),
+        color var(--duration-fast) var(--ease-out);
+    z-index: 1;
+}
+
+.card-modal-close:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+    color: var(--text-primary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

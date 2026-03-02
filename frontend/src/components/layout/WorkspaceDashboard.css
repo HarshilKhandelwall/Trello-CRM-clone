@@ -1,0 +1,244 @@
+/* Workspace Dashboard - Exact Stitch Match */
+
+.workspace-dashboard {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #f5f7f8;
+    /* bg-slate-50 */
+    padding: 2rem;
+    /* p-8 */
+}
+
+.dashboard-container {
+    max-width: 1280px;
+    /* max-w-7xl */
+    margin: 0 auto;
+}
+
+/* Section Header */
+.dashboard-section {
+    margin-bottom: 3rem;
+    /* mb-12 */
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    /* gap-3 */
+    margin-bottom: 1rem;
+    /* mb-4 */
+}
+
+.section-header .material-icons-outlined {
+    font-size: 1.5rem;
+    /* text-2xl */
+    color: rgb(71, 85, 105);
+    /* text-slate-600 */
+}
+
+.section-header h2 {
+    font-size: 1.125rem;
+    /* text-lg */
+    font-weight: 700;
+    /* font-bold */
+    color: rgb(15, 23, 42);
+    /* text-slate-900 */
+    margin: 0;
+}
+
+/* Board Grid - Exact Stitch: grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 */
+.board-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+    /* gap-4 (16px) */
+}
+
+@media (min-width: 640px) {
+    .board-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .board-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Board Card - Exact Stitch: h-28 rounded-xl */
+.board-card {
+    position: relative;
+    height: 7rem;
+    /* h-28 (112px) - EXACT STITCH */
+    border-radius: 0.75rem;
+    /* rounded-xl (12px) - EXACT STITCH */
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    /* shadow-sm */
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 0;
+    font-family: inherit;
+}
+
+.board-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    /* shadow-md */
+    transform: translateY(-2px);
+}
+
+/* Board Card Overlay - Exact Stitch */
+.board-card-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    /* bg-black/10 */
+    transition: background-color 0.2s;
+}
+
+.board-card:hover .board-card-overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+    /* bg-black/20 */
+}
+
+/* Board Card Content */
+.board-card-content {
+    position: relative;
+    padding: 1rem;
+    /* p-4 */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.board-card-title {
+    color: white;
+    font-size: 1rem;
+    /* text-base */
+    font-weight: 700;
+    /* font-bold */
+    margin: 0;
+    word-wrap: break-word;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.board-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.starred-icon {
+    color: white;
+    font-size: 0.875rem;
+    /* text-sm */
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.board-card:hover .starred-icon {
+    opacity: 1;
+}
+
+/* Create Board Card */
+.create-board-card {
+    background-color: rgba(15, 23, 42, 0.05);
+    /* bg-slate-900/5 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-board-card:hover {
+    background-color: rgba(15, 23, 42, 0.1);
+    /* bg-slate-900/10 */
+}
+
+.create-board-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    /* gap-2 */
+    color: rgb(71, 85, 105);
+    /* text-slate-600 */
+    font-weight: 600;
+    /* font-semibold */
+    font-size: 0.875rem;
+    /* text-sm */
+}
+
+.create-board-content .material-icons-outlined {
+    font-size: 2rem;
+    /* text-3xl */
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    /* py-16 px-8 */
+    text-align: center;
+}
+
+.empty-state .material-icons-outlined {
+    font-size: 4rem;
+    /* text-6xl */
+    color: rgb(203, 213, 225);
+    /* text-slate-300 */
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    /* text-2xl */
+    font-weight: 700;
+    /* font-bold */
+    color: rgb(15, 23, 42);
+    /* text-slate-900 */
+    margin: 0 0 0.5rem 0;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    /* text-base */
+    color: rgb(100, 116, 139);
+    /* text-slate-500 */
+    margin: 0 0 2rem 0;
+}
+
+.empty-state .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #0690e0;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    /* rounded-lg */
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.empty-state .btn:hover {
+    background-color: #0582cd;
+}
+
+.empty-state .btn .material-icons-outlined {
+    font-size: 1.25rem;
+    margin: 0;
+}

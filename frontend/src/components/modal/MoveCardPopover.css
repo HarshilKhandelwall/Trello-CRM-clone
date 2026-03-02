@@ -1,0 +1,58 @@
+/* Move Card Popover */
+
+.move-card-popover {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.move-card-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.move-card-field label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.move-card-select {
+    width: 100%;
+    padding: var(--space-2);
+    background-color: var(--neutral-100);
+    border: 1px solid rgba(9, 30, 66, 0.13);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out),
+        border-color var(--duration-fast) var(--ease-out);
+}
+
+.move-card-select:hover {
+    background-color: rgba(9, 30, 66, 0.04);
+}
+
+.move-card-select:focus {
+    outline: none;
+    border-color: var(--trello-blue);
+    background-color: var(--neutral-0);
+}
+
+.move-card-loading {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: var(--space-3) 0;
+    font-size: var(--font-size-sm);
+}
+
+.move-card-error {
+    color: var(--color-danger, #eb5a46);
+    font-size: var(--font-size-sm);
+    padding: var(--space-1) 0;
+}

@@ -1,0 +1,244 @@
+.manage-labels-modal {
+    background: white;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90vw;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #172b4d;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6b778c;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.modal-close:hover {
+    background-color: #f4f5f7;
+}
+
+.modal-body {
+    padding: 16px 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Create Label Button */
+.create-label-btn {
+    width: 100%;
+    padding: 12px;
+    background: #0079bf;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 16px;
+}
+
+.create-label-btn:hover {
+    background: #026aa7;
+}
+
+/* Label Form */
+.label-form {
+    background: #f4f5f7;
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.label-name-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #dfe1e6;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+}
+
+.label-name-input:focus {
+    outline: none;
+    border-color: #0079bf;
+}
+
+/* Color Picker */
+.color-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.color-option {
+    width: 40px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.color-option.selected {
+    border-color: #172b4d;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #172b4d;
+    transform: scale(1.1);
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background: #0079bf;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #026aa7;
+}
+
+.btn-secondary {
+    background: #f4f5f7;
+    color: #172b4d;
+}
+
+.btn-secondary:hover {
+    background: #e4e6ea;
+}
+
+/* Labels List */
+.labels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.loading,
+.empty-state {
+    text-align: center;
+    padding: 32px;
+    color: #6b778c;
+    font-size: 14px;
+}
+
+/* Label Item */
+.label-item {
+    background: #f4f5f7;
+    padding: 12px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.label-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.label-color-bar {
+    width: 48px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+.label-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #172b4d;
+    flex: 1;
+}
+
+.label-count {
+    font-size: 12px;
+    color: #6b778c;
+}
+
+/* Label Actions */
+.label-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit,
+.btn-delete {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-edit {
+    background: white;
+    color: #172b4d;
+}
+
+.btn-edit:hover {
+    background: #e4e6ea;
+}
+
+.btn-delete {
+    background: white;
+    color: #eb5a46;
+}
+
+.btn-delete:hover {
+    background: #ffebe6;
+}
+
+/* Label Edit Form */
+.label-edit-form {
+    width: 100%;
+}

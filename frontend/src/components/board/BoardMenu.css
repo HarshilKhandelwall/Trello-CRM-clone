@@ -1,0 +1,147 @@
+.board-menu-container {
+    position: relative;
+}
+
+.board-menu-button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: var(--radius-sm, 4px);
+    color: var(--neutral-0, #fff);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.board-menu-button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.board-menu-dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 300px;
+    background-color: var(--neutral-0, #fff);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: var(--shadow-modal, 0 8px 16px rgba(0, 0, 0, 0.15));
+    z-index: 100;
+    animation: menuSlideDown 0.2s ease-out;
+}
+
+@keyframes menuSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.board-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3, 12px) var(--space-4, 16px);
+    border-bottom: 1px solid rgba(9, 30, 66, 0.13);
+}
+
+.board-menu-header h3 {
+    font-size: var(--font-size-base, 16px);
+    font-weight: var(--font-weight-semibold, 600);
+    margin: 0;
+    color: var(--text-primary, #172B4D);
+}
+
+.menu-close-button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm, 4px);
+    color: var(--text-secondary, #5E6C84);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.menu-close-button:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+}
+
+.board-menu-section {
+    padding: var(--space-2, 8px) 0;
+    border-bottom: 1px solid rgba(9, 30, 66, 0.13);
+}
+
+.board-menu-section:last-child {
+    border-bottom: none;
+}
+
+.board-menu-section-header {
+    padding: var(--space-2, 8px) var(--space-4, 16px);
+    font-size: var(--font-size-xs, 12px);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--text-secondary, #5E6C84);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.board-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 12px);
+    padding: var(--space-2, 8px) var(--space-4, 16px);
+    background: none;
+    border: none;
+    color: var(--text-primary, #172B4D);
+    font-size: var(--font-size-sm, 14px);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.board-menu-item:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+}
+
+.board-menu-item svg {
+    flex-shrink: 0;
+    color: var(--text-secondary, #5E6C84);
+}
+
+.board-menu-info {
+    padding: var(--space-2, 8px) var(--space-4, 16px);
+    font-size: var(--font-size-sm, 14px);
+    color: var(--text-secondary, #5E6C84);
+    line-height: 1.4;
+}
+
+/* Delete Board Item - Red Styling */
+.delete-board-item {
+    color: #B04632 !important;
+    /* Red text */
+}
+
+.delete-board-item:hover {
+    background-color: rgba(176, 70, 50, 0.08) !important;
+    /* Light red background on hover */
+}
+
+.delete-board-item svg {
+    color: #B04632 !important;
+    /* Red icon */
+}

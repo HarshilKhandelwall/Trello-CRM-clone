@@ -1,0 +1,166 @@
+/* Card - Pixel-Perfect */
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding-y) var(--card-padding-x);
+    margin-bottom: var(--card-gap);
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    position: relative;
+    transition: transform var(--duration-fast) var(--ease-out),
+        box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.card:hover .card-menu-button {
+    opacity: 1;
+}
+
+.card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+/* Card Content Wrapper */
+.card-content {
+    position: relative;
+}
+
+/* Card Menu Button */
+.card-menu-button {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background-color: var(--neutral-0);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out),
+        background-color var(--duration-fast) var(--ease-out);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-card);
+}
+
+.card-menu-button:hover {
+    background-color: var(--neutral-100);
+    color: var(--text-primary);
+}
+
+/* Card Menu Dropdown */
+.card-menu {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    background-color: var(--neutral-0);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-dropdown);
+    padding: var(--space-2);
+    min-width: 120px;
+    z-index: var(--z-dropdown);
+}
+
+.card-menu button {
+    display: block;
+    width: 100%;
+    padding: var(--space-2);
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.card-menu button:hover {
+    background-color: rgba(9, 30, 66, 0.04);
+}
+
+.card-menu button.danger {
+    color: var(--error);
+}
+
+.card-menu button.danger:hover {
+    background-color: var(--error);
+    color: var(--neutral-0);
+}
+
+/* Card Labels */
+.card-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: var(--space-2);
+}
+
+.card-label {
+    height: 8px;
+    min-width: 40px;
+    border-radius: 4px;
+    transition: height var(--duration-fast) var(--ease-out);
+}
+
+.card:hover .card-label {
+    height: 16px;
+}
+
+/* Card Title */
+.card-title {
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    line-height: var(--line-height-normal);
+    word-wrap: break-word;
+    margin-bottom: var(--space-1);
+    padding-right: var(--space-6);
+    /* Space for menu button */
+}
+
+/* Card Badges */
+.card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.card-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.card-badge svg {
+    flex-shrink: 0;
+}
+
+.card-badge span {
+    line-height: 1;
+}
+
+/* Due Date Badge States */
+.card-badge.due-soon {
+    color: var(--warning);
+}
+
+.card-badge.due-overdue {
+    color: var(--error);
+}
+
+.card-badge.due-complete {
+    color: var(--success);
+}

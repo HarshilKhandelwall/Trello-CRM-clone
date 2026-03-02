@@ -1,0 +1,251 @@
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.auth-header h1 {
+    color: white;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 8px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.auth-card h2 {
+    margin: 0 0 24px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--neutral-900);
+    text-align: center;
+}
+
+.auth-error {
+    background: #fee;
+    border: 1px solid #fcc;
+    color: #c33;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--neutral-700);
+}
+
+.form-group input {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 2px solid var(--neutral-300);
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+}
+
+.form-group input::placeholder {
+    color: var(--neutral-400);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.auth-button {
+    width: 100%;
+    height: 44px;
+    background: var(--primary-500);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+
+.auth-button:hover:not(:disabled) {
+    background: var(--primary-600);
+}
+
+.auth-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: var(--primary-500);
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ── Admin choice select ────────────────────────────────── */
+.auth-select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 2px solid var(--neutral-300);
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.auth-select:focus {
+    outline: none;
+    border-color: var(--primary-500);
+}
+
+/* ── OTP step ───────────────────────────────────────────── */
+.otp-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.otp-icon {
+    width: 56px;
+    height: 56px;
+    background: #e8f4fd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.otp-icon .material-icons {
+    font-size: 28px;
+    color: var(--primary-500);
+}
+
+.otp-subtitle {
+    color: var(--neutral-600);
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.otp-inputs {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.otp-box {
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid var(--neutral-300);
+    border-radius: 8px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    caret-color: var(--primary-500);
+    color: var(--neutral-900);
+}
+
+.otp-box:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(0, 121, 191, 0.15);
+}
+
+.otp-box:not(:placeholder-shown) {
+    border-color: var(--primary-400);
+    background: #f0f8ff;
+}
+
+.otp-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.resend-btn {
+    background: none;
+    border: none;
+    color: var(--primary-500);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.resend-btn:hover:not(:disabled) {
+    background: rgba(0, 121, 191, 0.08);
+}
+
+.resend-btn:disabled {
+    color: var(--neutral-400);
+    cursor: default;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: var(--neutral-500);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.15s;
+}
+
+.back-btn:hover {
+    color: var(--neutral-800);
+}

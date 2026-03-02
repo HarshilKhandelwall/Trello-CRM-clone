@@ -1,0 +1,66 @@
+/* Labels Popover */
+
+.labels-popover {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.labels-search {
+    width: 100%;
+    padding: var(--space-2);
+    background-color: var(--neutral-100);
+    border: 1px solid rgba(9, 30, 66, 0.13);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    transition: background-color var(--duration-fast) var(--ease-out),
+        border-color var(--duration-fast) var(--ease-out);
+}
+
+.labels-search:focus {
+    outline: none;
+    border-color: var(--trello-blue);
+    background-color: var(--neutral-0);
+}
+
+.labels-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.label-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.label-option:hover {
+    transform: translateX(4px);
+}
+
+.label-color {
+    flex: 1;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--neutral-0);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.label-option:hover .label-color {
+    opacity: 0.9;
+}
+
+.label-check {
+    position: absolute;
+    right: var(--space-2);
+    color: var(--neutral-0);
+}

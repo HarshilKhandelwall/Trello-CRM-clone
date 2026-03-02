@@ -1,0 +1,56 @@
+.card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.card-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    background: var(--neutral-200);
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--neutral-700);
+    line-height: 1;
+}
+
+.card-badge svg {
+    flex-shrink: 0;
+}
+
+.card-badge span {
+    font-weight: 500;
+}
+
+/* Due date badge */
+.card-badge-due {
+    background: var(--warning-100);
+    color: var(--warning-800);
+}
+
+/* Checklist badge */
+.card-badge-checklist {
+    background: var(--neutral-200);
+    color: var(--neutral-700);
+}
+
+.card-badge-checklist.complete {
+    background: var(--success-100);
+    color: var(--success-800);
+}
+
+/* Hover effects */
+.card-badge:hover {
+    background: var(--neutral-300);
+}
+
+.card-badge-due:hover {
+    background: var(--warning-200);
+}
+
+.card-badge-checklist.complete:hover {
+    background: var(--success-200);
+}

@@ -1,0 +1,51 @@
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.live-indicator.connected {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.live-indicator.disconnected {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.live-indicator.connected .status-dot {
+    background-color: #10b981;
+}
+
+.live-indicator.disconnected .status-dot {
+    background-color: #ef4444;
+}
+
+.status-text {
+    line-height: 1;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}

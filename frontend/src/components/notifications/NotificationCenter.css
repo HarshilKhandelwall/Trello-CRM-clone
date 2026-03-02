@@ -1,0 +1,212 @@
+/* Notification Center */
+
+.notification-center {
+    position: relative;
+}
+
+.notification-bell {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius-full);
+    color: var(--neutral-0);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.notification-bell:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background-color: #eb5a46;
+    border-radius: 9px;
+    color: var(--neutral-0);
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    line-height: 18px;
+    text-align: center;
+}
+
+.notification-live-indicator {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: #61bd4f;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: pulse-indicator 2s ease-in-out infinite;
+}
+
+@keyframes pulse-indicator {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+.notification-panel {
+    position: fixed;
+    top: 48px;
+    right: 8px;
+    width: 380px;
+    max-height: 600px;
+    background-color: var(--neutral-0);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    animation: notificationPanelIn 200ms var(--ease-out);
+}
+
+@keyframes notificationPanelIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid rgba(9, 30, 66, 0.13);
+}
+
+.notification-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.mark-all-read {
+    padding: var(--space-1) var(--space-2);
+    background: none;
+    border: none;
+    color: var(--trello-blue);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.mark-all-read:hover {
+    background-color: rgba(9, 30, 66, 0.04);
+}
+
+.notification-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 520px;
+}
+
+.notification-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8) var(--space-4);
+    color: var(--text-secondary);
+}
+
+.notification-empty p {
+    margin: var(--space-2) 0 0 0;
+    font-size: var(--font-size-base);
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid rgba(9, 30, 66, 0.08);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+    position: relative;
+}
+
+.notification-item:hover {
+    background-color: rgba(9, 30, 66, 0.04);
+}
+
+.notification-item.unread {
+    background-color: rgba(0, 121, 191, 0.04);
+}
+
+.notification-item.unread:hover {
+    background-color: rgba(0, 121, 191, 0.08);
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(9, 30, 66, 0.04);
+    border-radius: var(--radius-full);
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-message {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+    line-height: 1.4;
+}
+
+.notification-card-title {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notification-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+.notification-dot {
+    position: absolute;
+    top: 50%;
+    right: var(--space-3);
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: var(--trello-blue);
+    border-radius: var(--radius-full);
+}

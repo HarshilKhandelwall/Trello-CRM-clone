@@ -1,0 +1,134 @@
+/* Activity Feed Panel Styles */
+.board-background-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.board-background-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.board-activity-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.board-activity-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.board-archived-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.board-archived-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.board-todo-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.board-todo-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.activity-feed-panel {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 400px;
+    max-height: 600px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e4e6e9;
+}
+
+.activity-feed-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #172b4d;
+}
+
+.activity-feed-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #5e6c84;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.activity-feed-close:hover {
+    color: #172b4d;
+}
+
+.activity-feed-panel .activity-feed {
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+    max-width: none;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.activity-feed-panel .activity-feed h3 {
+    display: none;
+}

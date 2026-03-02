@@ -1,0 +1,129 @@
+/* Board Container - Pixel-Perfect */
+
+.board-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0079BF 0%, #026AA7 100%);
+    transition: margin-left var(--duration-slow) var(--ease-spring);
+}
+
+.board-container.sidebar-collapsed {
+    margin-left: 0;
+}
+
+/* Board Header */
+.board-header {
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.board-header-actions {
+    position: relative;
+    display: flex;
+    gap: 8px;
+}
+
+.board-background-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.board-background-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.light-background .board-background-button {
+    background: rgba(0, 0, 0, 0.1);
+    color: #172B4D;
+}
+
+.light-background .board-background-button:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.light-background .board-title {
+    color: #172B4D;
+}
+
+.dark-background .board-title {
+    color: white;
+}
+
+.board-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--neutral-0);
+    margin: 0;
+}
+
+/* Board Lists Container */
+.board-lists {
+    flex: 1;
+    display: flex;
+    gap: var(--list-gap);
+    padding: var(--board-padding);
+    overflow-x: auto;
+    overflow-y: hidden;
+    align-items: flex-start;
+}
+
+/* Add List Button */
+.add-list-container {
+    flex-shrink: 0;
+}
+
+.add-list-button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: var(--list-width);
+    padding: var(--space-2) var(--space-3);
+    background-color: rgba(255, 255, 255, 0.24);
+    border: none;
+    border-radius: var(--list-border-radius);
+    color: var(--neutral-0);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.add-list-button:hover {
+    background-color: rgba(255, 255, 255, 0.32);
+}
+
+/* Empty State */
+.board-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--neutral-0);
+    text-align: center;
+}
+
+.board-empty-state h2 {
+    font-size: var(--font-size-2xl);
+    margin: 0 0 var(--space-2) 0;
+}
+
+.board-empty-state p {
+    font-size: var(--font-size-md);
+    opacity: 0.8;
+}

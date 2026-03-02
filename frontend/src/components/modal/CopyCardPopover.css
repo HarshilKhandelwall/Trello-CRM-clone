@@ -1,0 +1,146 @@
+.copy-card-popover {
+    width: 300px;
+    background-color: var(--neutral-0, #fff);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: var(--shadow-modal, 0 8px 16px rgba(0, 0, 0, 0.15));
+    animation: popoverSlideIn 0.2s ease-out;
+}
+
+@keyframes popoverSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3, 12px) var(--space-4, 16px);
+    border-bottom: 1px solid rgba(9, 30, 66, 0.13);
+}
+
+.popover-header h3 {
+    font-size: var(--font-size-sm, 14px);
+    font-weight: var(--font-weight-semibold, 600);
+    margin: 0;
+    color: var(--text-primary, #172B4D);
+}
+
+.popover-close {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm, 4px);
+    color: var(--text-secondary, #5E6C84);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.popover-close:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+}
+
+.popover-content {
+    padding: var(--space-4, 16px);
+}
+
+.form-group {
+    margin-bottom: var(--space-3, 12px);
+}
+
+.form-group label {
+    display: block;
+    font-size: var(--font-size-xs, 12px);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--text-secondary, #5E6C84);
+    margin-bottom: var(--space-1, 4px);
+}
+
+.form-group input[type="text"],
+.form-group select {
+    width: 100%;
+    padding: var(--space-2, 8px);
+    border: 1px solid rgba(9, 30, 66, 0.25);
+    border-radius: var(--radius-sm, 4px);
+    font-size: var(--font-size-sm, 14px);
+    color: var(--text-primary, #172B4D);
+    transition: border-color 0.2s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--trello-blue, #0079BF);
+}
+
+.form-section {
+    margin-bottom: var(--space-3, 12px);
+}
+
+.form-section > label {
+    display: block;
+    font-size: var(--font-size-xs, 12px);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--text-secondary, #5E6C84);
+    margin-bottom: var(--space-2, 8px);
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2, 8px);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 8px);
+    font-size: var(--font-size-sm, 14px);
+    color: var(--text-primary, #172B4D);
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.checkbox-label span {
+    user-select: none;
+}
+
+.copy-button {
+    width: 100%;
+    padding: var(--space-2, 8px);
+    background-color: var(--trello-blue, #0079BF);
+    border: none;
+    border-radius: var(--radius-sm, 4px);
+    color: var(--neutral-0, #fff);
+    font-size: var(--font-size-sm, 14px);
+    font-weight: var(--font-weight-semibold, 600);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.copy-button:hover:not(:disabled) {
+    background-color: #026aa7;
+}
+
+.copy-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

@@ -1,0 +1,388 @@
+/* Card Modal Content - Exact Stitch Two-column Layout */
+
+.card-modal-content {
+    padding: 1.5rem 2rem;
+    /* p-6 md:p-8 */
+}
+
+/* Header */
+.card-modal-header {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+}
+
+.card-modal-icon {
+    flex-shrink: 0;
+    color: var(--text-secondary);
+}
+
+.card-modal-header-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-modal-title {
+    font-size: 20px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-1) 0;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.card-modal-title:hover {
+    background-color: rgba(9, 30, 66, 0.04);
+}
+
+.card-modal-title-input {
+    width: 100%;
+    padding: var(--space-1) var(--space-2);
+    background-color: var(--neutral-0);
+    border: 2px solid var(--trello-blue);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: 20px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    outline: none;
+    resize: none;
+    overflow: hidden;
+}
+
+.card-modal-list-name {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.card-modal-list-name span {
+    text-decoration: underline;
+}
+
+/* Two-column body with flexbox */
+.card-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Responsive: side-by-side on md+ */
+@media (min-width: 768px) {
+    .card-modal-body {
+        flex-direction: row;
+        gap: 3rem;
+        /* gap-12 */
+    }
+}
+
+.card-modal-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-modal-sidebar {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+/* Exact Stitch: w-56 (14rem / 224px) sidebar on md+ */
+@media (min-width: 768px) {
+    .card-modal-sidebar {
+        width: 14rem;
+        /* w-56 - EXACT STITCH */
+        background-color: rgba(248, 250, 252, 0.5);
+        /* bg-slate-50/50 - EXACT STITCH */
+        border-left: 1px solid rgb(241, 245, 249);
+        /* border-slate-100 */
+        padding: 1.5rem 2rem;
+        /* p-6 md:p-8 */
+        margin-right: -2rem;
+        /* negative margin to extend to edge */
+    }
+}
+
+/* Labels Section */
+.card-modal-labels {
+    margin-bottom: var(--space-4);
+}
+
+.card-modal-labels h4 {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 var(--space-2) 0;
+}
+
+.card-modal-labels-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+}
+
+.card-modal-label {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--neutral-0);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.card-modal-label:hover {
+    opacity: 0.85;
+}
+
+/* Section */
+.card-modal-section {
+    margin-bottom: var(--space-6);
+}
+
+.card-modal-section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.card-modal-section-icon {
+    color: var(--text-secondary);
+}
+
+.card-modal-section-header h3 {
+    font-size: 1rem;
+    /* text-lg */
+    font-weight: 600;
+    /* font-semibold */
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Exact Stitch: ml-10 (2.5rem / 40px) spacing for content after icons */
+.card-modal-section-content {
+    margin-left: 2.5rem;
+    /* ml-10 - EXACT STITCH */
+}
+
+/* Due Date */
+.card-modal-date-display {
+    padding: var(--space-2) var(--space-3);
+    background-color: rgba(9, 30, 66, 0.04);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.card-modal-date-display:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+}
+
+.card-modal-date-edit {
+    margin-bottom: var(--space-3);
+}
+
+.card-modal-date-input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--neutral-0);
+    border: 2px solid var(--trello-blue);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    outline: none;
+    margin-bottom: var(--space-2);
+}
+
+.card-modal-date-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* Description */
+.card-modal-description {
+    min-height: 56px;
+    padding: var(--space-2) var(--space-3);
+    background-color: rgba(9, 30, 66, 0.04);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.card-modal-description:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+}
+
+.card-modal-description.empty {
+    color: var(--text-secondary);
+}
+
+.card-modal-description-edit {
+    margin-bottom: var(--space-3);
+}
+
+.card-modal-description-input {
+    width: 100%;
+    min-height: 108px;
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--neutral-0);
+    border: 2px solid var(--trello-blue);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    outline: none;
+    resize: vertical;
+}
+
+.card-modal-description-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* Attachments */
+.card-modal-attachments {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.card-modal-attachment {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background-color: rgba(9, 30, 66, 0.04);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.card-modal-attachment:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+}
+
+.card-modal-attachment-preview {
+    width: 112px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background-color: var(--neutral-200);
+}
+
+.card-modal-attachment-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-modal-attachment-icon {
+    width: 112px;
+    height: 80px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--neutral-200);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+}
+
+.card-modal-attachment-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-modal-attachment-name {
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card-modal-attachment-meta {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+}
+
+.card-modal-attachment-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--trello-blue);
+    font-size: var(--font-size-sm);
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+}
+
+.btn-link:hover {
+    color: #0065ff;
+}
+
+.btn-link.danger {
+    color: #bf2600;
+}
+
+.btn-link.danger:hover {
+    color: #ff5630;
+}
+
+/* Activity */
+.card-modal-activity {
+    padding: var(--space-3);
+}
+
+.card-modal-activity-empty {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin: 0;
+}
+
+/* Sidebar */
+.card-modal-sidebar-section {
+    margin-bottom: var(--space-4);
+}
+
+.card-modal-sidebar-section h4 {
+    font-size: 0.75rem;
+    /* text-xs */
+    font-weight: 600;
+    /* font-semibold */
+    color: rgb(100, 116, 139);
+    /* text-slate-500 */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.5rem 0;
+    /* mb-2 */
+}
+
+/* Sidebar section spacing - Exact Stitch */
+.card-modal-sidebar-section {
+    margin-bottom: 2rem;
+    /* mb-8 space-y-8 */
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: flex-start;
+    margin-bottom: var(--space-1);
+}
+
+.btn-block svg {
+    margin-right: var(--space-2);
+}

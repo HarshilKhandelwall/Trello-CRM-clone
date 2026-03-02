@@ -1,0 +1,64 @@
+.member-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    flex-shrink: 0;
+    border: 2px solid white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.member-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+/* Size variants */
+.member-avatar-small {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+}
+
+.member-avatar-medium {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+}
+
+.member-avatar-large {
+    width: 40px;
+    height: 40px;
+    font-size: 15px;
+}
+
+/* Avatar group (stacked) */
+.member-avatar-group {
+    display: flex;
+    align-items: center;
+    padding-left: 4px;
+}
+
+.member-avatar-group .member-avatar {
+    margin-left: -8px;
+}
+
+.member-avatar-group .member-avatar:first-child {
+    margin-left: 0;
+}
+
+.member-avatar-group .member-avatar-more {
+    background: #dfe1e6;
+    color: #172b4d;
+    font-weight: 600;
+}
+
+.member-avatar-group .member-avatar-more:hover {
+    background: #c1c7d0;
+}

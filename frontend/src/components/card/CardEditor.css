@@ -1,0 +1,29 @@
+/* Card Editor - Inline Editing */
+
+.card-editor {
+    background-color: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding-y) var(--card-padding-x);
+    margin-bottom: var(--card-gap);
+    box-shadow: var(--shadow-card);
+}
+
+.card-editor-textarea {
+    width: 100%;
+    min-height: 54px;
+    padding: var(--space-2);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+    resize: vertical;
+    outline: 2px solid var(--trello-blue);
+    outline-offset: -2px;
+    background-color: var(--neutral-0);
+}
+
+.card-editor-textarea:focus {
+    outline: 2px solid var(--trello-blue);
+}

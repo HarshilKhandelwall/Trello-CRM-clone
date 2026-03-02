@@ -1,0 +1,75 @@
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0;
+    position: relative;
+}
+
+.checklist-item:hover .checklist-item-delete {
+    opacity: 1;
+}
+
+.checklist-item-checkbox {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checklist-item-text {
+    flex: 1;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.checklist-item-text:hover {
+    background: var(--neutral-200);
+}
+
+.checklist-item.completed .checklist-item-text {
+    text-decoration: line-through;
+    color: var(--neutral-600);
+}
+
+.checklist-item-edit {
+    flex: 1;
+}
+
+.checklist-item-textarea {
+    width: 100%;
+    padding: 4px 8px;
+    border: 2px solid var(--primary-500);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 32px;
+}
+
+.checklist-item-textarea:focus {
+    outline: none;
+    border-color: var(--primary-600);
+}
+
+.checklist-item-delete {
+    opacity: 0;
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--neutral-600);
+    border-radius: 4px;
+    transition: opacity 0.2s, background 0.2s;
+    flex-shrink: 0;
+}
+
+.checklist-item-delete:hover {
+    background: var(--neutral-200);
+    color: var(--danger-600);
+}

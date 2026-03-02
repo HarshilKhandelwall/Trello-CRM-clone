@@ -1,0 +1,97 @@
+/* Board List - Exact Stitch Match (w-72 = 288px) */
+
+.board-list {
+    width: var(--list-width);
+    /* 288px */
+    background-color: var(--list-bg);
+    /* rgba(241, 245, 249, 0.9) */
+    backdrop-filter: blur(12px);
+    /* backdrop-blur-md */
+    border-radius: var(--list-border-radius);
+    /* rounded-xl (12px) */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* border-white/10 */
+    padding: var(--list-padding);
+    /* 12px */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    /* shadow-lg */
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 96px);
+    flex-shrink: 0;
+}
+
+/* List Header */
+.list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-2);
+}
+
+.list-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.list-menu-button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.list-menu-button:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+}
+
+/* List Cards */
+.list-cards {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0 -var(--space-1);
+    padding: 0 var(--space-1);
+    min-height: 8px;
+}
+
+/* List Footer */
+.list-footer {
+    padding-top: var(--space-2);
+}
+
+.add-card-button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    background: none;
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.add-card-button:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+    color: var(--text-primary);
+}

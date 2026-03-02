@@ -1,0 +1,108 @@
+.background-picker {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    width: 304px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+}
+
+.background-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--neutral-300);
+}
+
+.background-picker-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--neutral-900);
+    margin: 0;
+}
+
+.background-picker-close {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--neutral-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.background-picker-close:hover {
+    background: var(--neutral-200);
+    color: var(--neutral-900);
+}
+
+.background-picker-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--neutral-300);
+}
+
+.background-picker-tabs .tab {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--neutral-600);
+    transition: all 0.2s;
+}
+
+.background-picker-tabs .tab:hover {
+    background: var(--neutral-100);
+    color: var(--neutral-900);
+}
+
+.background-picker-tabs .tab.active {
+    color: var(--primary-600);
+    border-bottom-color: var(--primary-600);
+}
+
+.background-picker-content {
+    padding: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.background-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.background-option {
+    height: 96px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.background-option:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.background-option:active {
+    transform: scale(0.98);
+}
+
+.background-option svg {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}

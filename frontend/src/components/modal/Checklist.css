@@ -1,0 +1,112 @@
+.checklist {
+    margin-bottom: 24px;
+}
+
+.checklist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.checklist-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.checklist-header-left svg {
+    color: var(--neutral-600);
+    flex-shrink: 0;
+}
+
+.checklist-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--neutral-900);
+    margin: 0;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.checklist-name:hover {
+    background: var(--neutral-200);
+}
+
+.checklist-name-input {
+    flex: 1;
+    padding: 4px 8px;
+    border: 2px solid var(--primary-500);
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.checklist-name-input:focus {
+    outline: none;
+    border-color: var(--primary-600);
+}
+
+.checklist-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.progress-text {
+    font-size: 11px;
+    color: var(--neutral-600);
+    min-width: 32px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--neutral-300);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--success-500);
+    transition: width 0.3s ease;
+}
+
+.checklist-items {
+    margin-bottom: 8px;
+}
+
+.checklist-toggle {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: var(--neutral-700);
+}
+
+.add-item-form {
+    margin-top: 8px;
+}
+
+.add-item-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--primary-500);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 8px;
+}
+
+.add-item-textarea:focus {
+    outline: none;
+    border-color: var(--primary-600);
+}
+
+.add-item-actions {
+    display: flex;
+    gap: 8px;
+}

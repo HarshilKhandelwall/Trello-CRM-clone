@@ -1,0 +1,29 @@
+.checklist-section {
+    margin-top: 24px;
+}
+
+.add-checklist-form {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--neutral-100);
+    border-radius: 8px;
+}
+
+.checklist-name-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--primary-500);
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.checklist-name-input:focus {
+    outline: none;
+    border-color: var(--primary-600);
+}
+
+.add-checklist-actions {
+    display: flex;
+    gap: 8px;
+}

@@ -1,0 +1,24 @@
+# Core Django
+Django>=4.2
+
+# Django REST Framework
+djangorestframework
+
+# ASGI server (required for Django Channels / WebSockets)
+daphne
+
+# WebSocket / real-time support
+channels
+
+# In-memory channel layer (used instead of Redis in development)
+# Switch to channels-redis and configure Redis for production
+channels-redis
+
+# CORS headers middleware
+django-cors-headers
+
+# Background task scheduler (used for due-date notifications)
+apscheduler==3.10.4
+
+# HTTP client (used for downloading Trello attachments during import)
+requests
