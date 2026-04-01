@@ -52,7 +52,10 @@ CORS_ALLOWED_ORIGINS = [
 CORS_EXPOSE_HEADERS = ['X-CSRFToken']
 
 # ── CSRF ──────────────────────────────────────────────────────────────────────
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+_extra_csrf = os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS + [
+    o.strip() for o in _extra_csrf.split(',') if o.strip()
+]
 # Must be False so JavaScript (on a different port in dev) can read the cookie
 CSRF_COOKIE_HTTPONLY = False
 # 'Lax' works for same-domain different-port requests in development
@@ -62,6 +65,10 @@ CSRF_COOKIE_NAME = 'csrftoken'
 # ── Session ───────────────────────────────────────────────────────────────────
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_HTTPONLY = True
+
+# ── Behind Nginx proxy ────────────────────────────────────────────────────────
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = 'config.urls'
 

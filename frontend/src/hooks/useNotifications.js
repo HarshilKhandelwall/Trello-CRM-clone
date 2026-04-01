@@ -12,7 +12,9 @@ export function useNotifications(dispatch) {
 
   let ws;
   try {
-    ws = new WebSocket('ws://localhost:8000/ws/notifications/');
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${wsProtocol}//${window.location.host}/ws/notifications/`;
+    ws = new WebSocket(wsUrl);
 
     ws.onmessage = e =>
       dispatch({
