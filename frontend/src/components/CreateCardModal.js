@@ -11,7 +11,7 @@ export default function CreateCardModal({ listId, board, setBoard, onClose }) {
   const create = async () => {
     if (!title.trim()) return;
 
-    const card = await apiPost('http://localhost:8000/api/cards/', {
+    const card = await apiPost('/api/cards/', {
       title,
       list: listId,
       description,

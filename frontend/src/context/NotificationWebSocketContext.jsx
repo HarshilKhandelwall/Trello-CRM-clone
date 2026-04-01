@@ -2,7 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { useAuth } from './AuthContext';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// WebSockets can't go through CRA proxy — connect directly to the backend.
+const WS_BASE_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:8000';
 
 const NotificationWebSocketContext = createContext(null);
 
@@ -22,10 +23,7 @@ export const NotificationWebSocketProvider = ({ children }) => {
     // Connect only when logged in
     let socketUrl = null;
     if (user) {
-        const apiUrl = new URL(API_BASE_URL);
-        const wsScheme = apiUrl.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsOrigin = `${wsScheme}//${apiUrl.host}`;
-        socketUrl = `${wsOrigin}/ws/notifications/`;
+        socketUrl = `${WS_BASE_URL}/ws/notifications/`;
     }
 
     const { readyState, getWebSocket } = useWebSocket(socketUrl, {

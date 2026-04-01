@@ -28,7 +28,7 @@ const CreateBoardModal = ({ workspaceId, onClose, onBoardCreated }) => {
             setLoading(true);
             setError(null);
 
-            const response = await fetch(`http://localhost:8000/api/workspaces/${workspaceId}/boards/`, {
+            const response = await fetch(`/api/workspaces/${workspaceId}/boards/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

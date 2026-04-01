@@ -20,7 +20,7 @@ const CopyCardPopover = ({ card, board, onCopy, onClose }) => {
 
         try {
             const response = await fetch(
-                `http://localhost:8000/api/cards/${card.id}/copy/`,
+                `/api/cards/${card.id}/copy/`,
                 {
                     method: 'POST',
                     credentials: 'include',

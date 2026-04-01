@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import './TodayTasksModal.css';
 
@@ -32,7 +33,7 @@ const TodayTasksModal = ({ boardId, onClose, onCardClick }) => {
             setError(null);
 
             const response = await fetch(
-                `http://localhost:8000/api/boards/${boardId}/today-tasks/`,
+                `/api/boards/${boardId}/today-tasks/`,
                 {
                     credentials: 'include',
                     headers: {
@@ -115,7 +116,7 @@ const TodayTasksModal = ({ boardId, onClose, onCardClick }) => {
     const groupedTasks = groupTasksByTime(tasks.today || []);
     const totalTasks = (tasks.today?.length || 0) + (tasks.overdue?.length || 0);
 
-    return (
+    return ReactDOM.createPortal(
         <div className="modal-overlay" onClick={onClose}>
             <div className="today-tasks-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="today-modal-header">
@@ -225,7 +226,8 @@ const TodayTasksModal = ({ boardId, onClose, onCardClick }) => {
                     )}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

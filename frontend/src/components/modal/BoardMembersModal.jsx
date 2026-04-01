@@ -21,7 +21,7 @@ const BoardMembersModal = ({ boardId, onClose, currentUserId }) => {
             setError(null);
 
             const response = await fetch(
-                `http://localhost:8000/api/boards/${boardId}/members/`,
+                `/api/boards/${boardId}/members/`,
                 {
                     credentials: 'include',
                     headers: {
@@ -53,7 +53,7 @@ const BoardMembersModal = ({ boardId, onClose, currentUserId }) => {
     const handleRoleChange = async (userId, newRole) => {
         try {
             const response = await fetch(
-                `http://localhost:8000/api/boards/${boardId}/members/${userId}/`,
+                `/api/boards/${boardId}/members/${userId}/`,
                 {
                     method: 'PATCH',
                     credentials: 'include',
@@ -86,7 +86,7 @@ const BoardMembersModal = ({ boardId, onClose, currentUserId }) => {
 
         try {
             const response = await fetch(
-                `http://localhost:8000/api/boards/${boardId}/members/${userId}/`,
+                `/api/boards/${boardId}/members/${userId}/`,
                 {
                     method: 'DELETE',
                     credentials: 'include',

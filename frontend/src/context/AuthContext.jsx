@@ -1,6 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// Empty string = relative URLs, proxied to localhost:8000 by CRA — no CORS needed.
+const API_BASE_URL = '';
+
+// Stored in memory — cross-origin document.cookie is unreliable between ports
+let csrfTokenCache = null;
 
 const AuthContext = createContext(null);
 
@@ -17,32 +21,28 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const getCookie = (name) => {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+        const match = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
     };
 
-    const getCSRFToken = () => getCookie('csrftoken');
+    const getCSRFToken = () => csrfTokenCache || getCookie('csrftoken') || '';
 
     const ensureCsrfCookie = async () => {
         try {
-            await fetch(`${API_BASE_URL}/api/auth/csrf/`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/csrf/`, {
                 method: 'GET',
                 credentials: 'include',
             });
+            if (res.ok) {
+                const data = await res.json();
+                csrfTokenCache = data.csrfToken || getCookie('csrftoken') || '';
+            }
         } catch (error) {
-            console.error('Failed to ensure CSRF cookie:', error);
+            console.error('Failed to fetch CSRF token:', error);
         }
     };
+
+
 
     useEffect(() => {
         checkAuth();

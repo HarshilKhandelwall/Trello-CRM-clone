@@ -1,6 +1,6 @@
 // API Client for Backend Communication
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// CRA proxy (package.json "proxy") forwards /api/* to localhost:8000 — same-origin, no CORS.
+const API_BASE_URL = '';
 
 // CSRF Token Management
 function getCookie(name) {

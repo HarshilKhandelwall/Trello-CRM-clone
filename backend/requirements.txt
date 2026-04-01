@@ -22,3 +22,6 @@ apscheduler==3.10.4
 
 # HTTP client (used for downloading Trello attachments during import)
 requests
+
+# Serve React static files efficiently from Django (no separate static server needed)
+whitenoise

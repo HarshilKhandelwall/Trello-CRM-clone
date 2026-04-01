@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// WebSockets can't go through CRA proxy — connect directly to the backend.
+const WS_BASE_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:8000';
 
 const WebSocketContext = createContext(null);
 
@@ -29,10 +30,7 @@ export const WebSocketProvider = ({ boardId, children }) => {
             ws.current.close();
         }
 
-        const apiUrl = new URL(API_BASE_URL);
-        const wsScheme = apiUrl.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsOrigin = `${wsScheme}//${apiUrl.host}`;
-        const wsUrl = `${wsOrigin}/ws/board/${boardId}/`;
+        const wsUrl = `${WS_BASE_URL}/ws/board/${boardId}/`;
         console.log('Connecting to WebSocket:', wsUrl);
 
         ws.current = new WebSocket(wsUrl);

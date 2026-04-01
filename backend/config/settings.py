@@ -25,11 +25,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',  # Serve static via whitenoise in dev too
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Must be right after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -38,23 +40,39 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS / CSRF for browser-based session auth
+# ── CORS ──────────────────────────────────────────────────────────────────────
 CORS_ALLOW_CREDENTIALS = True
-_default_cors_origins = 'http://localhost:3000'
+_default_cors_origins = 'http://localhost:3000,http://localhost:8000'
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get('DJANGO_CORS_ALLOWED_ORIGINS', _default_cors_origins).split(',')
     if origin.strip()
 ]
+# Expose the CSRF token header so the frontend can read it even cross-origin
+CORS_EXPOSE_HEADERS = ['X-CSRFToken']
 
+# ── CSRF ──────────────────────────────────────────────────────────────────────
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+# Must be False so JavaScript (on a different port in dev) can read the cookie
+CSRF_COOKIE_HTTPONLY = False
+# 'Lax' works for same-domain different-port requests in development
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_NAME = 'csrftoken'
+
+# ── Session ───────────────────────────────────────────────────────────────────
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTPONLY = True
 
 ROOT_URLCONF = 'config.urls'
+
+# React build directory (frontend/build/)
+REACT_BUILD_DIR = BASE_DIR.parent / 'frontend' / 'build'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # Serve React's index.html as a Django template for the SPA catch-all
+        'DIRS': [REACT_BUILD_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,6 +121,14 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+# Where `collectstatic` places all gathered static files
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Include React's built static assets so collectstatic picks them up
+STATICFILES_DIRS = [
+    REACT_BUILD_DIR / 'static',
+] if REACT_BUILD_DIR.exists() else []
+# WhiteNoise compression + caching for production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (uploads)
 MEDIA_URL = '/media/'

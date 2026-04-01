@@ -51,7 +51,7 @@ const AppHeader = ({ workspace, board, workspaces, onWorkspaceChange, onWorkspac
 
             try {
                 const response = await fetch(
-                    `http://localhost:8000/api/boards/${board.id}/today-tasks/`,
+                    `/api/boards/${board.id}/today-tasks/`,
                     {
                         credentials: 'include',
                     }
@@ -76,7 +76,7 @@ const AppHeader = ({ workspace, board, workspaces, onWorkspaceChange, onWorkspac
         const interval = setInterval(fetchTodayTaskCount, 60000);
 
         return () => clearInterval(interval);
-    }, [board]);
+    }, [board?.id]);
 
     // Keyboard shortcut (Shift+T) for Today Tasks
     useEffect(() => {

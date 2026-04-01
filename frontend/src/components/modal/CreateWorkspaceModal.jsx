@@ -20,7 +20,7 @@ const CreateWorkspaceModal = ({ onClose, onWorkspaceCreated }) => {
             setLoading(true);
             setError(null);
 
-            const response = await fetch('http://localhost:8000/api/workspaces/', {
+            const response = await fetch('/api/workspaces/', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

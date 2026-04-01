@@ -28,7 +28,7 @@ const InviteMemberPopover = ({ boardId, onClose, onMemberAdded }) => {
             setError(null);
 
             const response = await fetch(
-                `http://localhost:8000/api/users/search/?q=${encodeURIComponent(searchQuery)}&board_id=${boardId}`,
+                `/api/users/search/?q=${encodeURIComponent(searchQuery)}&board_id=${boardId}`,
                 {
                     credentials: 'include',
                     headers: {
@@ -54,7 +54,7 @@ const InviteMemberPopover = ({ boardId, onClose, onMemberAdded }) => {
     const handleAddMember = async (user) => {
         try {
             const response = await fetch(
-                `http://localhost:8000/api/boards/${boardId}/members/`,
+                `/api/boards/${boardId}/members/`,
                 {
                     method: 'POST',
                     credentials: 'include',

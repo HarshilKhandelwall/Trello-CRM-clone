@@ -1,0 +1,20 @@
+{
+    "name": "trello-crm-clone",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" --kill-others-on-fail \"npm run backend:dev\" \"npm run frontend:dev\"",
+        "start": "npm run frontend:build && npm run backend:start",
+        "backend:dev": "cd backend && venv\\Scripts\\daphne -p 8000 config.asgi:application",
+        "backend:start": "cd backend && venv\\Scripts\\python manage.py collectstatic --noinput && venv\\Scripts\\daphne -p 8000 config.asgi:application",
+        "backend:migrate": "cd backend && venv\\Scripts\\python manage.py migrate",
+        "backend:createsuperuser": "cd backend && venv\\Scripts\\python manage.py createsuperuser",
+        "frontend:dev": "cd frontend && npm start",
+        "frontend:build": "cd frontend && npm run build",
+        "setup": "npm install && cd frontend && npm install && cd ../backend && venv\\Scripts\\pip install -r requirements.txt && venv\\Scripts\\python manage.py migrate",
+        "install:all": "npm install && cd frontend && npm install"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}

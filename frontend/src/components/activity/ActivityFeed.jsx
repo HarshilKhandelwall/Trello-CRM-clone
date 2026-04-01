@@ -22,7 +22,7 @@ const ActivityFeed = ({ boardId, cardId }) => {
             setError(null);
 
             // Build URL with optional cardId filter
-            let url = `http://localhost:8000/api/boards/${boardId}/activities/?page=1&page_size=50`;
+            let url = `/api/boards/${boardId}/activities/?page=1&page_size=50`;
             if (cardId) {
                 url += `&card_id=${cardId}`;
             }
@@ -53,7 +53,7 @@ const ActivityFeed = ({ boardId, cardId }) => {
     const loadMore = async () => {
         try {
             const nextPage = page + 1;
-            let url = `http://localhost:8000/api/boards/${boardId}/activities/?page=${nextPage}&page_size=50`;
+            let url = `/api/boards/${boardId}/activities/?page=${nextPage}&page_size=50`;
             if (cardId) {
                 url += `&card_id=${cardId}`;
             }

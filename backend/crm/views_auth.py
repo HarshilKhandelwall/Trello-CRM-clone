@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.utils.decorators import method_decorator
 from crm.serializers import UserSerializer
 
@@ -60,7 +60,7 @@ class RegisterView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     """User login endpoint"""
     authentication_classes = [SessionAuthentication]
@@ -114,9 +114,14 @@ class CurrentUserView(APIView):
 
 
 class GetCSRFTokenView(APIView):
-    """Get CSRF token for frontend"""
+    """Get CSRF token for frontend — returns token in body + header for cross-origin dev."""
     permission_classes = [AllowAny]
 
     @method_decorator(ensure_csrf_cookie)
     def get(self, request):
-        return Response({'detail': 'CSRF cookie set'}, status=status.HTTP_200_OK)
+        from django.middleware.csrf import get_token
+        token = get_token(request)
+        response = Response({'csrfToken': token}, status=status.HTTP_200_OK)
+        # Also expose it as a header so JS can read it even when cookie is cross-origin
+        response['X-CSRFToken'] = token
+        return response

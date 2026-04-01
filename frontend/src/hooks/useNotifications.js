@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 export function useNotifications(dispatch) {
   useEffect(() => {
-  fetch('http://localhost:8000/api/notifications/', {
+  fetch('/api/notifications/', {
     credentials: 'include',
   })
     .then(r => (r.ok ? r.json() : []))

@@ -17,7 +17,7 @@ const ArchivedCardsModal = ({ boardId, onClose, onRestore }) => {
             setError(null);
 
             const response = await fetch(
-                `http://localhost:8000/api/boards/${boardId}/archived-cards/`,
+                `/api/boards/${boardId}/archived-cards/`,
                 {
                     credentials: 'include',
                     headers: {

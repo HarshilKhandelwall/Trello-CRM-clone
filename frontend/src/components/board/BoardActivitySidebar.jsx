@@ -37,7 +37,7 @@ const BoardActivitySidebar = ({ boardId, isOpen, onClose }) => {
         try {
             setLoading(pageNum === 1);
 
-            let url = `http://localhost:8000/api/boards/${boardId}/activities/?page=${pageNum}&page_size=50`;
+            let url = `/api/boards/${boardId}/activities/?page=${pageNum}&page_size=50`;
             if (filter !== 'all') {
                 url += `&action_type=${filter}`;
             }

@@ -335,7 +335,7 @@ const CardModalContent = ({ card, listName, onClose }) => {
                                         {isImage(attachment.filename) ? (
                                             <div className="card-modal-attachment-preview">
                                                 <img
-                                                    src={`http://localhost:8000${attachment.file_url}`}
+                                                    src={`${attachment.file_url}`}
                                                     alt={attachment.filename}
                                                 />
                                             </div>
@@ -354,7 +354,7 @@ const CardModalContent = ({ card, listName, onClose }) => {
                                             </div>
                                             <div className="card-modal-attachment-actions">
                                                 <a
-                                                    href={`http://localhost:8000${attachment.file_url}`}
+                                                    href={`${attachment.file_url}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="btn-link"
