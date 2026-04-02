@@ -17,7 +17,7 @@ git push origin main
 echo.
 echo [3/3] Connecting to VPS to pull and restart...
 :: Connects via SSH to automate the pull and systemctl commands
-ssh root@166.0.244.228 "cd /root/Trello-CRM-clone && git pull origin main && systemctl restart crm"
+ssh root@166.0.244.228 "cd /root/Trello-CRM-clone && git pull origin main && cd frontend && npm install && npm run build && cd ../backend && systemctl restart crm"
 
 echo.
 echo ===================================================
