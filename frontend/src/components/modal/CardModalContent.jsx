@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useBoard } from '../../context/BoardContext';
 import AttachmentUpload from './AttachmentUpload';
@@ -13,7 +13,27 @@ import { attachments, cards as cardsApi } from '../../api/endpoints';
 import './CardModalContent.css';
 
 const CardModalContent = ({ card, listName, onClose }) => {
-    const { updateCard, board, archiveCard } = useBoard();
+    // useBoard() returns null when this modal is opened outside a BoardProvider
+    // (e.g. from the notification panel). We fall back to direct API calls.
+    const boardContext = useBoard();
+    const board = boardContext?.board ?? null;
+
+    // updateCard: use context if available, else call API directly
+    const updateCard = useCallback(async (cardId, updates) => {
+        if (boardContext?.updateCard) {
+            return boardContext.updateCard(cardId, updates);
+        }
+        return cardsApi.update(cardId, updates);
+    }, [boardContext]);
+
+    // archiveCard: use context if available, else call API directly
+    const archiveCard = useCallback(async (cardId) => {
+        if (boardContext?.archiveCard) {
+            return boardContext.archiveCard(cardId);
+        }
+        return cardsApi.archive(cardId);
+    }, [boardContext]);
+
     const [title, setTitle] = useState(card.title);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [description, setDescription] = useState(card.description || '');
@@ -379,7 +399,7 @@ const CardModalContent = ({ card, listName, onClose }) => {
                     <ChecklistSection card={card} onUpdate={() => {/* Refresh card data if needed */ }} />
 
                     {/* Activity Feed */}
-                    <ActivityFeed boardId={board?.id} cardId={card.id} />
+                    <ActivityFeed boardId={board?.id ?? card.board} cardId={card.id} />
 
                     {/* Comments */}
                     <CommentsSection card={card} />
@@ -450,7 +470,7 @@ const CardModalContent = ({ card, listName, onClose }) => {
             {/* Popovers */}
             <LabelsPopover
                 card={card}
-                boardId={board?.id}
+                boardId={board?.id ?? card.board}
                 isOpen={showLabelsPopover}
                 onClose={() => setShowLabelsPopover(false)}
                 triggerRef={labelsButtonRef}
@@ -461,7 +481,7 @@ const CardModalContent = ({ card, listName, onClose }) => {
                 isOpen={showMovePopover}
                 onClose={() => setShowMovePopover(false)}
                 triggerRef={moveButtonRef}
-                board={board}
+                board={board ?? { id: card.board }}
                 onMoved={() => {
                     setShowMovePopover(false);
                     onClose();
@@ -477,7 +497,7 @@ const CardModalContent = ({ card, listName, onClose }) => {
                 }}>
                     <CopyCardPopover
                         card={card}
-                        board={board}
+                        board={board ?? { id: card.board }}
                         onClose={() => setShowCopyPopover(false)}
                         onCopy={(newCard) => {
                             console.log('Card copied:', newCard);

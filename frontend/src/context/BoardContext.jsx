@@ -7,11 +7,9 @@ import { useAuth } from './AuthContext';
 const BoardContext = createContext();
 
 export const useBoard = () => {
-    const context = useContext(BoardContext);
-    if (!context) {
-        throw new Error('useBoard must be used within BoardProvider');
-    }
-    return context;
+    // Returns null when used outside a BoardProvider (e.g. notification modal).
+    // Components must handle the null case themselves.
+    return useContext(BoardContext) ?? null;
 };
 
 export const BoardProvider = ({ children, initialBoard, onBoardDelete }) => {
