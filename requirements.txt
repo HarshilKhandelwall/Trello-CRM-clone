@@ -25,3 +25,5 @@ requests
 
 # Serve React static files efficiently from Django (no separate static server needed)
 whitenoise
+
+gunicorn
