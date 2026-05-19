@@ -7,10 +7,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
 
-_default_allowed_hosts = 'localhost,127.0.0.1', 'trello-crm-clone.onrender.com'
+_default_allowed_hosts = 'localhost,127.0.0.1,trello-crm-clone.onrender.com'
+
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', _default_allowed_hosts).split(',')
+    for host in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS',
+        _default_allowed_hosts
+    ).split(',')
     if host.strip()
 ]
 
