@@ -4,11 +4,12 @@ from django.apps import AppConfig
 class CrmConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'crm'
-
-        def ready(self):
+    def ready(self):
         """
         Start the notification scheduler when Django starts.
         """
+
+        
     
         # Import signals
         import crm.signals
