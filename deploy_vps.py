@@ -33,6 +33,11 @@ if not SECRET_KEY:
     import secrets
     SECRET_KEY = secrets.token_urlsafe(50)
 
+# Load SMTP email settings from environment
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+SUPERADMIN_OTP_EMAIL = os.environ.get("SUPERADMIN_OTP_EMAIL", "")
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def run(ssh, cmd, desc="", ignore_errors=False):
     print(f"\n{'='*60}")
@@ -188,6 +193,9 @@ DJANGO_DB_ENGINE=django.db.backends.sqlite3
 DJANGO_DB_NAME={APP_DIR}/backend/db.sqlite3
 DJANGO_CHANNEL_BACKEND=memory
 DJANGO_REDIS_URL=redis://localhost:6379/0
+EMAIL_HOST_USER={EMAIL_HOST_USER}
+EMAIL_HOST_PASSWORD={EMAIL_HOST_PASSWORD}
+SUPERADMIN_OTP_EMAIL={SUPERADMIN_OTP_EMAIL}
 """
 write_remote_file(ssh, f"{APP_DIR}/backend/.env", env_content)
 
