@@ -81,6 +81,17 @@ const AppHeader = ({ workspace, board, workspaces, onWorkspaceChange, onWorkspac
     // Keyboard shortcut (Shift+T) for Today Tasks
     useEffect(() => {
         const handleKeyDown = (event) => {
+            // Ignore shortcut when focused on input, textarea, or editable elements
+            const activeEl = document.activeElement;
+            if (
+                activeEl &&
+                (activeEl.tagName === 'INPUT' ||
+                 activeEl.tagName === 'TEXTAREA' ||
+                 activeEl.isContentEditable)
+            ) {
+                return;
+            }
+
             if (event.shiftKey && event.key === 'T') {
                 event.preventDefault();
                 setShowTodayTasks(true);
