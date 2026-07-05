@@ -11,13 +11,13 @@ import stat
 import time
 
 # ── Config ────────────────────────────────────────────────────────────────────
-HOST = "166.0.244.228"
+HOST = "46.37.122.138"
 PORT = 22
 USER = "root"
-PASSWORD = "H@rshil212121"
+PASSWORD = "9?vX&lG%,M'R#q^J"
 DOMAIN = "crm.welinkglobalsolutions.com"
 APP_DIR = "/home/crm/app"
-LOCAL_PROJECT = r"c:\New folder\Trello CRM clone"
+LOCAL_PROJECT = r"c:\New folder\Trello dev build"
 
 SECRET_KEY = "FvXjWCHZHFozmAd4rt7WKrXoE84AuZvZappmsdVLvJzqeyjNDmXyD-J8YCLcB5AXE64"
 

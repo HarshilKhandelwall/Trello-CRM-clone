@@ -37,7 +37,7 @@ class Command(BaseCommand):
             BoardMember.objects.create(
                 board=old_leads_board,
                 user=workspace.created_by,
-                role='admin'
+                role='ADMIN'
             )
             
             # Create default list

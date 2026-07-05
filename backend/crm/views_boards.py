@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-from django.db import connection
+from django.db import transaction
 from .models import Board, BoardMember
 from .serializers import BoardSerializer
 from .auth import CsrfExemptSessionAuthentication
@@ -61,15 +61,12 @@ class BoardDetailView(APIView):
             return Response({'error': 'Need ADMIN permission to delete board'}, status=403)
         
         board_name = board.name
-        
-        # Delete board with FK workaround for SQLite
-        with connection.cursor() as cursor:
-            cursor.execute("PRAGMA foreign_keys = OFF")
-            try:
-                board.delete()
-            finally:
-                cursor.execute("PRAGMA foreign_keys = ON")
-        
+
+        # ── C-7 FIX: Django ORM already handles CASCADE deletes in Python.
+        # The PRAGMA foreign_keys = OFF workaround was unnecessary and unsafe.
+        with transaction.atomic():
+            board.delete()
+
         return Response({'status': 'deleted', 'message': f'Board "{board_name}" deleted successfully'}, status=204)
 
     def patch(self, request, board_id):

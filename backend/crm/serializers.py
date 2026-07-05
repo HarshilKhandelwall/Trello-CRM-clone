@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from crm.models import Workspace, Board, List, Card, Comment, Notification, Attachment, Checklist, ChecklistItem, Activity, Label, WorkspaceMember
+from crm.models import Workspace, Board, List, Card, Comment, Notification, Attachment, Checklist, ChecklistItem, Activity, Label, WorkspaceMember, BoardMember
 from crm.serializers_labels import LabelSerializer
 from django.contrib.auth import get_user_model
 
@@ -51,7 +51,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
     
     def get_file_url(self, obj):
         if obj.file:
-            return obj.file.url
+            return f'/api/attachments/{obj.id}/download/'
         return None
 
 class CardSerializer(serializers.ModelSerializer):
@@ -79,7 +79,7 @@ class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
         fields = ['id', 'title', 'description', 'email', 'phone', 'due_at', 'labels', 'label_ids',
-                  'list', 'list_name', 'created_by', 'created_at', 'attachments', 'checklists', 
+                  'list', 'list_name', 'position', 'created_by', 'created_at', 'attachments', 'checklists', 
                   'comments_count', 'members', 'member_ids', 'archived', 'archived_at', 'archived_by']
     
     def get_comments_count(self, obj):
@@ -97,16 +97,53 @@ class ListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'position', 'cards']
     
     def get_cards(self, obj):
-        # Filter out archived cards
-        cards = obj.cards.filter(archived=False)
+        # Filter out archived cards and order by position
+        cards = obj.cards.filter(archived=False).order_by('position', 'id')
+        
+        # ── M-1 FIX: Use prefetch_related to avoid N+1 queries when serializing nested fields
+        cards = cards.prefetch_related('checklists__items', 'attachments', 'members', 'labels')
+        
         return CardSerializer(cards, many=True).data
+
+class BoardMemberBriefSerializer(serializers.ModelSerializer):
+    """Minimal board member data for the board header role badge."""
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
+        model = BoardMember
+        fields = ['id', 'user_id', 'username', 'role']
+
 
 class BoardSerializer(serializers.ModelSerializer):
     lists = ListSerializer(many=True, read_only=True)
+    members = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ['id', 'name', 'lists', 'background_type', 'background_value', 'background_brightness']
+        fields = ['id', 'name', 'lists', 'members', 'background_type', 'background_value', 'background_brightness']
+
+    def get_members(self, obj):
+        from crm.permissions import get_effective_board_members
+        effective = get_effective_board_members(obj)
+        data = []
+        for em in effective:
+            user = em['user']
+            data.append({
+                'id': em['id'],
+                'user_id': user.id,
+                'username': user.username,
+                'role': em['role'],
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name
+                }
+            })
+        return data
+
 
 class WorkspaceSerializer(serializers.ModelSerializer):
     boards = BoardSerializer(many=True, read_only=True)

@@ -19,8 +19,9 @@ function getCookie(name) {
 }
 
 function getCSRFToken() {
-    return getCookie('csrftoken');
+    return window.csrfToken || getCookie('csrftoken');
 }
+
 
 // HTTP Client
 class APIClient {

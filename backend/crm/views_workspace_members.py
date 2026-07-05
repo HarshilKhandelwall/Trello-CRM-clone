@@ -96,6 +96,10 @@ class WorkspaceMemberDetailView(APIView):
         except WorkspaceMember.DoesNotExist:
             return Response({'error': 'Member not found'}, status=404)
 
+        # ── C-1 FIX: Prevent ADMIN from modifying OWNER role
+        if member.role == 'OWNER' and not user_can_access_workspace(request.user, workspace, min_role='OWNER'):
+            return Response({'error': 'Only OWNER can modify OWNER roles'}, status=403)
+
         new_role = request.data.get('role')
         if new_role not in ['VIEWER', 'EDITOR', 'ADMIN', 'OWNER']:
             return Response({'error': 'Invalid role'}, status=400)
@@ -130,6 +134,10 @@ class WorkspaceMemberDetailView(APIView):
             member = WorkspaceMember.objects.get(workspace=workspace, user__id=user_id)
         except WorkspaceMember.DoesNotExist:
             return Response({'error': 'Member not found'}, status=404)
+
+        # ── C-1 FIX: Prevent ADMIN from deleting OWNER
+        if member.role == 'OWNER' and not user_can_access_workspace(request.user, workspace, min_role='OWNER'):
+            return Response({'error': 'Only OWNER can remove OWNER members'}, status=403)
 
         # Prevent removing the last OWNER
         if member.role == 'OWNER':

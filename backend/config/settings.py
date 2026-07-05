@@ -4,8 +4,16 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security & environment configuration
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+
+# ── L-1 FIX: Do not allow weak fallback secret keys in production
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'dev-secret-key'
+    else:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured("DJANGO_SECRET_KEY environment variable is required in production (DEBUG=False).")
 
 _default_allowed_hosts = 'localhost,127.0.0.1,trello-crm-clone.onrender.com'
 
@@ -163,3 +171,46 @@ else:
     }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ── Email / OTP ────────────────────────────────────────────────────────────────
+# The hardcoded superadmin email that receives every login OTP.
+# ⚠️  Change this to your real email address before using.
+SUPERADMIN_OTP_EMAIL = os.environ.get('SUPERADMIN_OTP_EMAIL', 'superadmin@example.com')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# Set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD as environment variables,
+# or replace the second argument to os.environ.get() with your actual values.
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+# ── L-6 FIX: Provide a non-empty fallback to prevent SMTP 550 errors
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER if EMAIL_HOST_USER else 'noreply@trello-crm.local'
+
+# OTP expiry in seconds (10 minutes)
+OTP_EXPIRY_SECONDS = 600
+
+# ── M-1 FIX: Throttling / Rate Limiting configuration
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day',
+        'login': '5/min'
+    }
+}
+
+# ── L-1 FIX: Production security headers
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True

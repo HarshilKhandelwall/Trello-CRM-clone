@@ -105,6 +105,30 @@ function MainApp() {
     setCurrentBoard(null);
   };
 
+  const handleBoardSelectFromSearch = (boardId, _cardId) => {
+    // Find the board across all workspaces and switch to it
+    for (const ws of workspaces) {
+      const found = ws.boards?.find(b => b.id === boardId);
+      if (found) {
+        setCurrentWorkspace(ws);
+        setCurrentBoard(found);
+        return;
+      }
+    }
+    // Board not found in loaded workspaces — reload and try again
+    workspacesAPI.list().then(data => {
+      setWorkspaces(data || []);
+      for (const ws of data || []) {
+        const found = ws.boards?.find(b => b.id === boardId);
+        if (found) {
+          setCurrentWorkspace(ws);
+          setCurrentBoard(found);
+          return;
+        }
+      }
+    });
+  };
+
   if (loading) {
     return (
       <div className="app-loading">
@@ -123,6 +147,7 @@ function MainApp() {
             board={currentBoard}
             onWorkspaceChange={handleWorkspaceChange}
             onWorkspaceCreated={handleWorkspaceCreated}
+            onBoardSelect={handleBoardSelectFromSearch}
           />
 
           <div className="app-main">

@@ -71,6 +71,55 @@
     margin: 0;
 }
 
+/* Board title row — groups title + role badge */
+.board-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Role badge */
+.board-role-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.4);
+    color: #fff;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(4px);
+    cursor: default;
+    user-select: none;
+}
+
+.board-role-badge.board-role-admin {
+    background: rgba(255, 196, 0, 0.25);
+    border-color: rgba(255, 196, 0, 0.6);
+    color: #ffe066;
+}
+
+.board-role-badge.board-role-editor {
+    background: rgba(0, 198, 172, 0.2);
+    border-color: rgba(0, 198, 172, 0.5);
+    color: #7fffd8;
+}
+
+.board-role-badge.board-role-viewer {
+    background: rgba(255,255,255, 0.12);
+    border-color: rgba(255,255,255, 0.3);
+    color: rgba(255,255,255,0.75);
+}
+
+.light-background .board-role-badge {
+    color: #172b4d;
+    border-color: rgba(0,0,0,0.25);
+    background: rgba(0,0,0,0.08);
+}
+
 /* Board Lists Container */
 .board-lists {
     flex: 1;

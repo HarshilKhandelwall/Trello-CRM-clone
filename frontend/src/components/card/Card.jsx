@@ -7,6 +7,8 @@ import CardModalContent from '../modal/CardModalContent';
 import CardBadges from './CardBadges';
 import './Card.css';
 
+const IMAGE_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|avif|svg)(\?.*)?$/i;
+
 const Card = ({ card, isDragging = false }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
@@ -14,6 +16,12 @@ const Card = ({ card, isDragging = false }) => {
     const { board, deleteCard } = useBoard();
 
     const hasLabels = card.labels && card.labels.length > 0;
+
+    // Detect first image attachment for cover
+    const coverImage = card.attachments?.find(att => {
+        const url = att.file_url || att.file || '';
+        return IMAGE_EXTENSIONS.test(url);
+    });
 
     // Find the list name for this card
     const listName = board?.lists?.find(list =>
@@ -54,9 +62,20 @@ const Card = ({ card, isDragging = false }) => {
     return (
         <>
             <div
-                className={`card ${isDragging ? 'dragging' : ''}`}
+                className={`card ${isDragging ? 'dragging' : ''} ${coverImage ? 'has-cover' : ''}`}
                 onClick={handleCardClick}
             >
+                {/* Cover Image — Trello style full-width banner */}
+                {coverImage && (
+                    <div className="card-cover">
+                        <img
+                            src={coverImage.file_url || coverImage.file}
+                            alt="Cover"
+                            className="card-cover-image"
+                        />
+                    </div>
+                )}
+
                 {hasLabels && (
                     <div className="card-labels">
                         {card.labels.slice(0, 5).map((label, index) => (
@@ -120,6 +139,7 @@ const Card = ({ card, isDragging = false }) => {
         </>
     );
 };
+
 
 Card.propTypes = {
     card: PropTypes.shape({

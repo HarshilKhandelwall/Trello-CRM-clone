@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from crm.models import Board, List, BoardMember
 from crm.serializers import ListSerializer
 from crm.auth import CsrfExemptSessionAuthentication
@@ -110,8 +111,7 @@ class ListDetailView(APIView):
     def delete(self, request, list_id):
         from channels.layers import get_channel_layer
         from asgiref.sync import async_to_sync
-        from django.db import connection
-        
+
         lst = get_object_or_404(List, id=list_id)
         board = lst.board
         list_id_to_delete = lst.id
@@ -120,18 +120,11 @@ class ListDetailView(APIView):
             return Response({'error': 'forbidden'}, status=403)
         
         list_name = lst.name
-        
-        # SQLite FK workaround: Disable FK checks for this specific deletion
-        with connection.cursor() as cursor:
-            # Turn off FK constraints
-            cursor.execute("PRAGMA foreign_keys = OFF")
-            
-            try:
-                # Delete the list - CASCADE will delete all cards and related objects
-                lst.delete()
-            finally:
-                # Always re-enable FK constraints
-                cursor.execute("PRAGMA foreign_keys = ON")
+
+        # ── C-7 FIX: Django ORM already handles CASCADE deletes in Python.
+        # The PRAGMA foreign_keys = OFF workaround was unnecessary and unsafe.
+        with transaction.atomic():
+            lst.delete()
         
         # Log activity AFTER deletion (don't reference the deleted list)
         log_activity(
@@ -197,11 +190,12 @@ class MoveListView(APIView):
             # Insert at new position
             lists_array.insert(new_position, lst)
             
-            # Update all positions
-            for index, list_item in enumerate(lists_array):
-                if list_item.position != index:
-                    list_item.position = index
-                    list_item.save(update_fields=['position'])
+            # ── M-6 FIX: Use transaction.atomic() to ensure list position updates are atomic
+            with transaction.atomic():
+                for index, list_item in enumerate(lists_array):
+                    if list_item.position != index:
+                        list_item.position = index
+                        list_item.save(update_fields=['position'])
             
             # Log activity
             log_activity(

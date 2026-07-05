@@ -1,29 +1,31 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import json
+import logging
+from channels.db import database_sync_to_async
+
+logger = logging.getLogger(__name__)
 
 class NotificationConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         user = self.scope['user']
         if user.is_anonymous:
-            print("❌ Anonymous user attempted notification WebSocket connection")
+            logger.warning("Anonymous user attempted notification WebSocket connection")
             await self.close()
             return
         self.user = user
         self.group_name = f'user_{user.id}'
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
-        print(f"✅ Notification WebSocket connected for user {user.username} (ID: {user.id})")
-        print(f"   Group: {self.group_name}, Channel: {self.channel_name}")
+        logger.info(f"Notification WebSocket connected for user {user.username}")
 
     async def disconnect(self, close_code):
-        print(f"🔌 Notification WebSocket disconnected for user {getattr(self, 'user', 'Unknown')} (code: {close_code})")
+        logger.info(f"Notification WebSocket disconnected (code: {close_code})")
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def notify(self, event):
-        print(f"📨 NotificationConsumer.notify() called with event: {event}")
+        logger.debug(f"NotificationConsumer.notify() called")
         payload = event.get('data', {})
-        print(f"📤 Sending to client: {payload}")
         await self.send_json(payload)
 
 
@@ -40,12 +42,27 @@ class BoardConsumer(AsyncJsonWebsocketConsumer):
         self.user = self.scope.get('user')
         
         # Log connection attempt
-        print(f"WebSocket connection attempt for board {self.board_id}")
-        print(f"User: {self.user}, Is anonymous: {getattr(self.user, 'is_anonymous', True)}")
+        logger.debug(f"WebSocket connection attempt for board {self.board_id}")
         
         # Reject anonymous users
-        if not self.user or self.user.is_anonymous:
-            print(f"Rejecting anonymous user connection")
+        if not self.user or getattr(self.user, 'is_anonymous', True):
+            logger.warning(f"Rejecting anonymous user connection")
+            await self.close()
+            return
+            
+        # ── L-3 FIX: Verify board access before accepting the connection
+        from crm.models import Board
+        from crm.permissions import user_can_access_board
+        
+        try:
+            board = await database_sync_to_async(Board.objects.get)(id=self.board_id)
+            has_access = await database_sync_to_async(user_can_access_board)(self.user, board, min_role='VIEWER')
+            if not has_access:
+                logger.warning(f"User {self.user.username} denied access to board {self.board_id}")
+                await self.close()
+                return
+        except Board.DoesNotExist:
+            logger.warning(f"Board {self.board_id} does not exist")
             await self.close()
             return
         
@@ -56,8 +73,7 @@ class BoardConsumer(AsyncJsonWebsocketConsumer):
         )
         
         await self.accept()
-        
-        print(f"WebSocket accepted for user {self.user.username} on board {self.board_id}")
+        logger.info(f"WebSocket accepted for user {self.user.username} on board {self.board_id}")
         
         # Send initial connection message
         await self.send_json({
@@ -69,7 +85,7 @@ class BoardConsumer(AsyncJsonWebsocketConsumer):
     
     async def disconnect(self, close_code):
         """Handle WebSocket disconnection"""
-        print(f"WebSocket disconnecting with code {close_code}")
+        logger.info(f"WebSocket disconnecting with code {close_code}")
         # Leave board group
         if hasattr(self, 'board_group_name'):
             await self.channel_layer.group_discard(

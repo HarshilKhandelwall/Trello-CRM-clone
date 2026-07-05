@@ -19,6 +19,38 @@ export const NotificationWebSocketProvider = ({ children }) => {
     const { user } = useAuth();
     const [lastNotification, setLastNotification] = useState(null);
     const [unreadCount, setUnreadCount] = useState(0);
+    const audioCtxRef = React.useRef(null);
+
+    // Play a soft "ding" notification sound via Web Audio API
+    const playNotificationSound = React.useCallback(() => {
+        try {
+            if (!audioCtxRef.current) {
+                audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            const ctx = audioCtxRef.current;
+            // Resume context if it was suspended (browser autoplay policy)
+            if (ctx.state === 'suspended') ctx.resume();
+
+            const oscillator = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(ctx.destination);
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, ctx.currentTime);          // A5 note
+            oscillator.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.15); // glide down
+
+            gainNode.gain.setValueAtTime(0, ctx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.02); // attack
+            gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5); // decay
+
+            oscillator.start(ctx.currentTime);
+            oscillator.stop(ctx.currentTime + 0.5);
+        } catch (err) {
+            // AudioContext not available — silently ignore
+        }
+    }, []);
 
     // Connect only when logged in
     let socketUrl = null;
@@ -45,6 +77,9 @@ export const NotificationWebSocketProvider = ({ children }) => {
                 // Immediately bump the bell badge — no need to wait for the panel to open
                 setUnreadCount(prev => prev + 1);
 
+                // Play notification sound
+                playNotificationSound();
+
                 // Native browser notification
                 if ('Notification' in window && Notification.permission === 'granted') {
                     new Notification('Trello Clone', {
@@ -62,6 +97,7 @@ export const NotificationWebSocketProvider = ({ children }) => {
         reconnectAttempts: 20,
         share: false,
     });
+
 
     // Request permission on login
     useEffect(() => {

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import CreateBoardModal from '../modal/CreateBoardModal';
+import BoardMembersModal from '../modal/BoardMembersModal';
+import { useAuth } from '../../context/AuthContext';
 import './WorkspaceSidebar.css';
 
 const WorkspaceSidebar = ({
@@ -14,7 +16,9 @@ const WorkspaceSidebar = ({
     onBoardCreated
 }) => {
     const [showCreateBoard, setShowCreateBoard] = useState(false);
+    const [showBoardPermissions, setShowBoardPermissions] = useState(false);
     const [activeNav, setActiveNav] = useState('boards');
+    const { user } = useAuth();
 
     if (collapsed) {
         return (
@@ -30,14 +34,10 @@ const WorkspaceSidebar = ({
         );
     }
 
-    // Get starred boards (first 3 for demo)
-    const starredBoards = workspace?.boards?.slice(0, 3) || [];
-    const regularBoards = workspace?.boards?.slice(3) || [];
-
     return (
         <>
             <aside className="workspace-sidebar">
-                {/* Navigation Icons */}
+                {/* Navigation Links */}
                 <nav className="space-y-1">
                     <a
                         href="#"
@@ -67,8 +67,8 @@ const WorkspaceSidebar = ({
 
                 {/* Workspaces Section */}
                 <div className="mt-8">
-                    <div className="flex items-center justify-between px-3 mb-2">
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Workspaces</span>
+                    <div className="sidebar-section-header">
+                        <span className="sidebar-section-label">Workspaces</span>
                     </div>
                     <div className="space-y-1">
                         {workspaces && workspaces.length > 0 ? (
@@ -101,14 +101,14 @@ const WorkspaceSidebar = ({
                 {/* Boards Section */}
                 {workspace?.boards && workspace.boards.length > 0 && (
                     <div className="mt-8">
-                        <div className="flex items-center justify-between px-3 mb-2">
-                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Your Boards</span>
+                        <div className="sidebar-section-header">
+                            <span className="sidebar-section-label">Your Boards</span>
                             <button
-                                className="p-1 hover:bg-slate-100 rounded"
+                                className="sidebar-add-btn"
                                 onClick={() => setShowCreateBoard(true)}
                                 title="Create board"
                             >
-                                <span className="material-icons-outlined text-sm">add</span>
+                                <span className="material-icons-outlined" style={{fontSize:'16px'}}>add</span>
                             </button>
                         </div>
                         <div className="space-y-1">
@@ -134,20 +134,23 @@ const WorkspaceSidebar = ({
                     </div>
                 )}
 
-                {/* Workspace Settings Link — only for ADMIN/OWNER */}
-                {workspace && ['ADMIN', 'OWNER'].includes(workspace.my_role) && (
-                    <div className="mt-auto pt-4 border-t border-slate-200">
-                        <a
-                            href={`/workspaces/${workspace.id}/settings`}
-                            className="nav-link"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                window.location.href = `/workspaces/${workspace.id}/settings`;
-                            }}
+                {/* Spacer */}
+                <div style={{ flex: 1 }} />
+
+                {/* Board Permissions — shown when a board is selected */}
+                {currentBoard && (
+                    <div className="sidebar-footer-section">
+                        <button
+                            className="nav-link sidebar-permissions-btn"
+                            onClick={() => setShowBoardPermissions(true)}
+                            title="Manage who can access this board"
                         >
-                            <span className="material-icons-outlined">settings</span>
-                            Workspace Settings
-                        </a>
+                            <span className="material-icons-outlined">manage_accounts</span>
+                            <div className="sidebar-permissions-text">
+                                <span className="sidebar-permissions-label">Board Permissions</span>
+                                <span className="sidebar-permissions-sub">{currentBoard.name}</span>
+                            </div>
+                        </button>
                     </div>
                 )}
 
@@ -169,6 +172,15 @@ const WorkspaceSidebar = ({
                         setShowCreateBoard(false);
                         onBoardCreated?.(board);
                     }}
+                />
+            )}
+
+            {/* Per-Board Permissions Modal */}
+            {showBoardPermissions && currentBoard && (
+                <BoardMembersModal
+                    boardId={currentBoard.id}
+                    currentUserId={user?.id}
+                    onClose={() => setShowBoardPermissions(false)}
                 />
             )}
         </>

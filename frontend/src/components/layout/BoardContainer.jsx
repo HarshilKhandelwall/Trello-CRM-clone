@@ -4,6 +4,7 @@ import { DndContext, DragOverlay, closestCorners, PointerSensor, useSensor, useS
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { useBoard } from '../../context/BoardContext';
 import { useFilters } from '../../context/FilterContext';
+import { useAuth } from '../../context/AuthContext';
 import BoardList from '../board/BoardList';
 import AddListForm from '../board/AddListForm';
 import Card from '../card/Card';
@@ -33,6 +34,14 @@ const BoardContainer = ({ sidebarCollapsed }) => {
     const [selectedCard, setSelectedCard] = useState(null);
     const { board, moveCard, moveList, reloadBoard, restoreCard, deleteBoard } = useBoard();
     const { searchTerm, selectedLabels, selectedMembers, dueDateFilter } = useFilters();
+    const { user } = useAuth();
+
+    // Determine current user's role on this board
+    const userBoardRole = useMemo(() => {
+        if (!board || !user) return null;
+        const member = board.members?.find(m => m.user?.id === user.id || m.user === user.id);
+        return member?.role || null;
+    }, [board, user]);
 
     // Configure sensors for better drag experience
     const sensors = useSensors(
@@ -133,19 +142,26 @@ const BoardContainer = ({ sidebarCollapsed }) => {
 
         if (!over) return;
 
-        const activeCard = active.data.current?.card;
-        const activeList = active.data.current?.list;
-        const overList = over.data.current?.list;
-        const overCard = over.data.current?.card;
+        const activeId = active.id;
+        const overId = over.id;
 
-        // Handle list reordering
-        if (activeList && !activeCard) {
-            const oldIndex = board.lists.findIndex(l => l.id === activeList.id);
-            const newIndex = board.lists.findIndex(l => l.id === over.id);
+        // Determine types from IDs
+        const isActiveList = typeof activeId === 'string' && activeId.startsWith('list-');
+        const isActiveCard = typeof activeId === 'string' && activeId.startsWith('card-');
+
+        // Handle list reordering - always use unfiltered board
+        if (isActiveList) {
+            const activeListId = parseInt(activeId.replace('list-', ''), 10);
+            const overListId = typeof overId === 'string' && overId.startsWith('list-')
+                ? parseInt(overId.replace('list-', ''), 10)
+                : overId;
+
+            const oldIndex = board.lists.findIndex(l => l.id === activeListId);
+            const newIndex = board.lists.findIndex(l => l.id === overListId);
 
             if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
                 try {
-                    await moveList(activeList.id, newIndex);
+                    await moveList(activeListId, newIndex);
                 } catch (err) {
                     console.error('Failed to move list:', err);
                 }
@@ -154,30 +170,55 @@ const BoardContainer = ({ sidebarCollapsed }) => {
         }
 
         // Handle card reordering
-        if (!activeCard) return;
+        if (!isActiveCard) return;
+
+        const activeCardId = parseInt(activeId.replace('card-', ''), 10);
+
+        // Find active card's current list (use unfiltered board)
+        const sourceList = board.lists.find(list =>
+            list.cards?.some(c => c.id === activeCardId)
+        );
+
+        if (!sourceList) return;
 
         // Determine target list and position
         let targetListId;
         let position = 0;
 
-        if (overList) {
-            // Dropped over a list
-            targetListId = overList.id;
-            position = overList.cards?.length || 0;
-        } else if (overCard) {
-            // Dropped over a card
+        const isOverList = typeof overId === 'string' && overId.startsWith('list-');
+        const isOverCard = typeof overId === 'string' && overId.startsWith('card-');
+
+        if (isOverList) {
+            // Dropped directly on a list — append to end of that list
+            targetListId = parseInt(overId.replace('list-', ''), 10);
+            const targetList = board.lists.find(l => l.id === targetListId);
+            const targetCards = (targetList?.cards || []).filter(c => c.id !== activeCardId);
+            position = targetCards.length;
+        } else if (isOverCard) {
+            // Dropped on another card — insert before that card (using unfiltered board positions)
+            const overCardId = parseInt(overId.replace('card-', ''), 10);
             const targetList = board.lists.find(list =>
-                list.cards?.some(c => c.id === overCard.id)
+                list.cards?.some(c => c.id === overCardId)
             );
             if (targetList) {
                 targetListId = targetList.id;
-                position = targetList.cards.findIndex(c => c.id === overCard.id);
+                const targetCards = (targetList.cards || []).filter(c => c.id !== activeCardId);
+                position = targetCards.findIndex(c => c.id === overCardId);
+                if (position === -1) position = targetCards.length;
             }
+        } else {
+            // Dropped somewhere else on the board — keep in same list at same position
+            return;
         }
 
-        if (targetListId) {
+        if (targetListId !== undefined) {
+            // Don't move if same list and same position
+            const sameList = sourceList.id === targetListId;
+            const currentPosition = sourceList.cards?.findIndex(c => c.id === activeCardId) ?? -1;
+            if (sameList && currentPosition === position) return;
+
             try {
-                await moveCard(activeCard.id, targetListId, position);
+                await moveCard(activeCardId, targetListId, position);
             } catch (err) {
                 console.error('Failed to move card:', err);
             }
@@ -212,7 +253,15 @@ const BoardContainer = ({ sidebarCollapsed }) => {
             style={getBackgroundStyle()}
         >
             <div className="board-header">
-                <h1 className="board-title">{board.name}</h1>
+                <div className="board-title-row">
+                    <h1 className="board-title">{board.name}</h1>
+                    {userBoardRole && (
+                        <span className={`board-role-badge board-role-${userBoardRole.toLowerCase()}`}
+                            title={`Your role on this board: ${userBoardRole}`}>
+                            {userBoardRole}
+                        </span>
+                    )}
+                </div>
                 <div className="board-header-actions">
                     <button
                         className="board-background-button"
@@ -333,11 +382,11 @@ const BoardContainer = ({ sidebarCollapsed }) => {
             >
                 <div className="board-lists">
                     <SortableContext
-                        items={filteredBoard.lists?.map(list => list.id) || []}
+                        items={filteredBoard.lists?.map(list => `list-${list.id}`) || []}
                         strategy={horizontalListSortingStrategy}
                     >
                         {filteredBoard.lists?.map((list) => (
-                            <BoardList key={list.id} list={list} />
+                            <BoardList key={`list-${list.id}`} list={list} />
                         ))}
                     </SortableContext>
 

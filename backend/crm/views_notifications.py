@@ -1,13 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication
+from crm.auth import CsrfExemptSessionAuthentication
 from crm.models import Notification
 from crm.serializers import NotificationSerializer
 
 
 class NotificationListView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -16,7 +16,7 @@ class NotificationListView(APIView):
 
 
 class MarkNotificationReadView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, notification_id):
@@ -30,7 +30,7 @@ class MarkNotificationReadView(APIView):
 
 
 class MarkAllNotificationsReadView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -39,8 +39,9 @@ class MarkAllNotificationsReadView(APIView):
 
 
 class UnreadNotificationCountView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
+
 
     def get(self, request):
         count = Notification.objects.filter(user=request.user, read=False).count()

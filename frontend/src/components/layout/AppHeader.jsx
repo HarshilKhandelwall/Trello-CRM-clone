@@ -10,7 +10,7 @@ import CreateWorkspaceModal from '../modal/CreateWorkspaceModal';
 import TodayTasksModal from '../modal/TodayTasksModal';
 import './AppHeader.css';
 
-const AppHeader = ({ workspace, board, workspaces, onWorkspaceChange, onWorkspaceCreated }) => {
+const AppHeader = ({ workspace, board, workspaces, onWorkspaceChange, onWorkspaceCreated, onBoardSelect }) => {
     const { user, logout } = useAuth();
     const { searchTerm, setSearchTerm } = useFilters();
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -111,16 +111,25 @@ const AppHeader = ({ workspace, board, workspaces, onWorkspaceChange, onWorkspac
         <header className="app-header">
             <div className="header-left">
                 <div className="header-logo">
-                    <span className="material-icons">dashboard</span>
+                    <div className="header-logo-icon">
+                        <svg viewBox="0 0 16 16" fill="white">
+                            <rect x="1" y="1" width="6" height="6" rx="1.5"/>
+                            <rect x="9" y="1" width="6" height="6" rx="1.5"/>
+                            <rect x="1" y="9" width="6" height="6" rx="1.5"/>
+                            <rect x="9" y="9" width="6" height="3" rx="1.5"/>
+                        </svg>
+                    </div>
                     <span className="header-logo-text">Trello</span>
                 </div>
+
+                <div className="header-divider" />
 
                 <div className="header-workspace" ref={workspaceMenuRef}>
                     <button
                         className="workspace-button"
                         onClick={() => setShowWorkspaceMenu(!showWorkspaceMenu)}
                     >
-                        <span>{workspace?.name || 'Select Workspace'}</span>
+                        <span style={{overflow:'hidden',textOverflow:'ellipsis',maxWidth:'120px'}}>{workspace?.name || 'Workspace'}</span>
                         <span className="material-icons" style={{ fontSize: '16px' }}>expand_more</span>
                     </button>
 
@@ -171,7 +180,9 @@ const AppHeader = ({ workspace, board, workspaces, onWorkspaceChange, onWorkspac
                 <SearchBar
                     value={searchTerm}
                     onChange={setSearchTerm}
-                    placeholder="Search cards..."
+                    placeholder="Search all boards..."
+                    workspace={workspace}
+                    onBoardSelect={onBoardSelect}
                 />
                 <FilterPanel board={board} />
             </div>
@@ -262,6 +273,7 @@ AppHeader.propTypes = {
     board: PropTypes.object,
     onWorkspaceChange: PropTypes.func,
     onWorkspaceCreated: PropTypes.func,
+    onBoardSelect: PropTypes.func,
 };
 
 export default AppHeader;

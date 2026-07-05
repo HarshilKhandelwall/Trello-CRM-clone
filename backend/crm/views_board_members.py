@@ -10,6 +10,7 @@ from channels.layers import get_channel_layer
 
 from .models import Board, BoardMember
 from .serializers_members import BoardMemberSerializer, UserSearchSerializer
+from crm.auth import CsrfExemptSessionAuthentication
 
 User = get_user_model()
 
@@ -19,6 +20,7 @@ class BoardMembersView(APIView):
     GET: List all members of a board
     POST: Add a new member to the board
     """
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
     
     def get(self, request, board_id):
@@ -26,31 +28,43 @@ class BoardMembersView(APIView):
         board = get_object_or_404(Board, id=board_id)
         
         # Check if user has access to this board
-        if not BoardMember.objects.filter(board=board, user=request.user).exists():
+        from crm.permissions import user_can_access_board
+        if not user_can_access_board(request.user, board, min_role='VIEWER'):
             return Response(
                 {'error': 'You do not have access to this board'},
                 status=status.HTTP_403_FORBIDDEN
             )
         
-        members = BoardMember.objects.filter(board=board).select_related('user', 'added_by')
-        serializer = BoardMemberSerializer(members, many=True)
-        return Response(serializer.data)
+        from crm.permissions import get_effective_board_members
+        effective = get_effective_board_members(board)
+        data = []
+        for em in effective:
+            user = em['user']
+            data.append({
+                'id': em['id'],
+                'role': em['role'],
+                'added_at': em['added_at'].isoformat() if em['added_at'] else None,
+                'added_by_username': em['added_by_username'],
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name
+                }
+            })
+        return Response(data)
     
     def post(self, request, board_id):
         """Add a new member to the board"""
         board = get_object_or_404(Board, id=board_id)
         
-        # Check if user is an admin
-        try:
-            current_member = BoardMember.objects.get(board=board, user=request.user)
-            if current_member.role != 'ADMIN':
-                return Response(
-                    {'error': 'Only admins can add members'},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-        except BoardMember.DoesNotExist:
+        # Check if user is an admin or owner
+        from crm.permissions import get_user_board_role
+        user_role = get_user_board_role(request.user, board)
+        if user_role not in ['ADMIN', 'OWNER']:
             return Response(
-                {'error': 'You are not a member of this board'},
+                {'error': 'Only admins can add members'},
                 status=status.HTTP_403_FORBIDDEN
             )
         
@@ -106,6 +120,7 @@ class BoardMemberDetailView(APIView):
     PATCH: Update member role
     DELETE: Remove member from board
     """
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
     
     def patch(self, request, board_id, user_id):
@@ -113,26 +128,12 @@ class BoardMemberDetailView(APIView):
         board = get_object_or_404(Board, id=board_id)
         
         # Check if requester is an admin
-        try:
-            current_member = BoardMember.objects.get(board=board, user=request.user)
-            if current_member.role != 'ADMIN':
-                return Response(
-                    {'error': 'Only admins can change member roles'},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-        except BoardMember.DoesNotExist:
+        from crm.permissions import get_user_board_role
+        user_role = get_user_board_role(request.user, board)
+        if user_role not in ['ADMIN', 'OWNER']:
             return Response(
-                {'error': 'You are not a member of this board'},
+                {'error': 'Only admins can change member roles'},
                 status=status.HTTP_403_FORBIDDEN
-            )
-        
-        # Get member to update
-        try:
-            member = BoardMember.objects.get(board=board, user_id=user_id)
-        except BoardMember.DoesNotExist:
-            return Response(
-                {'error': 'Member not found'},
-                status=status.HTTP_404_NOT_FOUND
             )
         
         # Update role
@@ -142,18 +143,26 @@ class BoardMemberDetailView(APIView):
                 {'error': 'Invalid role'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+            
+        # Get or create board override role
+        member, created = BoardMember.objects.get_or_create(
+            board=board,
+            user_id=user_id,
+            defaults={'role': new_role, 'added_by': request.user}
+        )
         
-        # Prevent removing the last admin
-        if member.role == 'ADMIN' and new_role != 'ADMIN':
-            admin_count = BoardMember.objects.filter(board=board, role='ADMIN').count()
-            if admin_count <= 1:
-                return Response(
-                    {'error': 'Cannot change role of the last admin'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        
-        member.role = new_role
-        member.save()
+        if not created:
+            # Prevent removing the last admin
+            if member.role == 'ADMIN' and new_role != 'ADMIN':
+                admin_count = BoardMember.objects.filter(board=board, role='ADMIN').count()
+                if admin_count <= 1:
+                    return Response(
+                        {'error': 'Cannot change role of the last admin'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            member.role = new_role
+            member.save()
+
         
         # Broadcast via WebSocket
         channel_layer = get_channel_layer()
@@ -173,19 +182,15 @@ class BoardMemberDetailView(APIView):
         board = get_object_or_404(Board, id=board_id)
         
         # Check if requester is an admin
-        try:
-            current_member = BoardMember.objects.get(board=board, user=request.user)
-            if current_member.role != 'ADMIN':
-                return Response(
-                    {'error': 'Only admins can remove members'},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-        except BoardMember.DoesNotExist:
+        from crm.permissions import get_user_board_role
+        user_role = get_user_board_role(request.user, board)
+        if user_role not in ['ADMIN', 'OWNER']:
             return Response(
-                {'error': 'You are not a member of this board'},
+                {'error': 'Only admins can remove members'},
                 status=status.HTTP_403_FORBIDDEN
             )
         
+
         # Get member to remove
         try:
             member = BoardMember.objects.get(board=board, user_id=user_id)
@@ -238,7 +243,14 @@ class UserSearchView(APIView):
             Q(email__icontains=query) |
             Q(first_name__icontains=query) |
             Q(last_name__icontains=query)
-        ).exclude(id=request.user.id)[:10]
+        )
+        
+        # ── M-1 FIX: Restrict user search to shared workspaces for multi-tenant isolation
+        if not request.user.is_superuser:
+            shared_workspaces = request.user.workspace_memberships.values_list('workspace_id', flat=True)
+            users = users.filter(workspace_memberships__workspace_id__in=shared_workspaces).distinct()
+            
+        users = users.exclude(id=request.user.id)[:10]
         
         # Exclude users already on the board
         if board_id:

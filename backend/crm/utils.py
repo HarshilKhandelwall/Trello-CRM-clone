@@ -20,6 +20,15 @@ def log_activity(board, user, action_type, description, card=None, list_obj=None
     Returns:
         Activity instance
     """
+    meta = metadata or {}
+    
+    # ── L-2 FIX: Always store card title and list name in metadata 
+    # to preserve history even if the card/list is deleted (FK SET_NULL)
+    if card and 'card_title' not in meta:
+        meta['card_title'] = card.title
+    if list_obj and 'list_name' not in meta:
+        meta['list_name'] = list_obj.name
+
     activity = Activity.objects.create(
         board=board,
         user=user,
@@ -27,7 +36,7 @@ def log_activity(board, user, action_type, description, card=None, list_obj=None
         card=card,
         list=list_obj,
         description=description,
-        metadata=metadata or {}
+        metadata=meta
     )
     return activity
 

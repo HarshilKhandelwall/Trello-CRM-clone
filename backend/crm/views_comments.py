@@ -1,14 +1,18 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from crm.models import Comment
+from crm.auth import CsrfExemptSessionAuthentication
+from crm.models import Comment, Card
 from crm.serializers import CommentSerializer
 from crm.utils import log_activity
+from crm.permissions import user_can_access_board
+from django.shortcuts import get_object_or_404
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
@@ -23,29 +27,37 @@ class CommentViewSet(viewsets.ModelViewSet):
         """Create a new comment"""
         from channels.layers import get_channel_layer
         from asgiref.sync import async_to_sync
-        from crm.models import Card, Notification
+        from crm.models import Notification
         from crm.utils import send_notification_to_user
-        
+
         card_id = request.data.get('card_id')
         text = request.data.get('text')
-        
+
         if not text or not text.strip():
             return Response(
                 {'error': 'Comment text cannot be empty'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
+        # ── C-5 FIX: validate card exists first (prevents 500 on bad card_id)
+        card = get_object_or_404(Card, id=card_id) if card_id else None
+        if card is None:
+            return Response({'error': 'card_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # ── C-5 FIX: check board-level access before creating the comment
+        board = card.list.board
+        if not user_can_access_board(request.user, board, min_role='EDITOR'):
+            return Response({'error': 'forbidden'}, status=status.HTTP_403_FORBIDDEN)
+
         comment = Comment.objects.create(
-            card_id=card_id,
+            card=card,
             user=request.user,
             text=text.strip()
         )
-        
+
         serializer = self.get_serializer(comment)
-        
+
         # Log activity
-        card = Card.objects.get(id=card_id)
-        board = card.list.board
         log_activity(
             board=board,
             user=request.user,
@@ -64,7 +76,7 @@ class CommentViewSet(viewsets.ModelViewSet):
                 message=f'{request.user.username} commented on "{card.title}"',
                 link=f'/card/{card.id}'
             )
-            
+
             # Send WebSocket notification
             send_notification_to_user(member.id, {
                 'id': notification.id,
@@ -75,10 +87,9 @@ class CommentViewSet(viewsets.ModelViewSet):
                 'created_at': notification.created_at.isoformat(),
                 'read': False
             })
-        
+
         # Broadcast WebSocket event
-        card = Card.objects.get(id=card_id)
-        board_id = card.list.board.id
+        board_id = board.id
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             f'board_{board_id}',

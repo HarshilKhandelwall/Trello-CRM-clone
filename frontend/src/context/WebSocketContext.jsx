@@ -59,10 +59,16 @@ export const WebSocketProvider = ({ boardId, children }) => {
             console.log('WebSocket disconnected', event.code, event.reason);
             setIsConnected(false);
 
-            // DON'T auto-reconnect here - let the useEffect handle reconnection
-            // The onclose handler was causing infinite loops by reconnecting
-            // even when the board was intentionally being switched
-            console.log('WebSocket closed - useEffect will handle reconnection if needed');
+            if (reconnectAttempts.current < maxReconnectAttempts) {
+                const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
+                console.log(`Attempting to reconnect in ${delay}ms...`);
+                reconnectTimeout.current = setTimeout(() => {
+                    reconnectAttempts.current += 1;
+                    connect();
+                }, delay);
+            } else {
+                console.error('Max reconnection attempts reached');
+            }
         };
     }, [boardId]);
 
@@ -99,6 +105,7 @@ export const WebSocketProvider = ({ boardId, children }) => {
             }
             if (ws.current) {
                 console.log('Cleaning up WebSocket connection');
+                ws.current.onclose = null; // Prevent reconnection logic on cleanup
                 ws.current.close();
                 ws.current = null;
             }

@@ -204,3 +204,18 @@ export const labels = {
 
     delete: (labelId) => apiClient.delete(`/api/labels/${labelId}/`),
 };
+
+// ========== SEARCH ==========
+
+export const search = {
+    /**
+     * Universal workspace search — returns cards across all accessible boards.
+     * @param {number} workspaceId
+     * @param {string} query - search term
+     * @param {object} options - { page, page_size }
+     */
+    workspace: (workspaceId, query, options = {}) =>
+        apiClient.get(`/api/workspaces/${workspaceId}/search/`, {
+            params: { q: query, ...options },
+        }),
+};

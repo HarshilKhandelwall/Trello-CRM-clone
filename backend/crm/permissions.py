@@ -139,3 +139,57 @@ def get_user_board_role(user, board):
             return board_member.role
         except BoardMember.DoesNotExist:
             return None
+
+
+def get_effective_board_members(board):
+    """
+    Get all users who have access to a board (workspace members + direct board members),
+    along with their effective role on the board.
+    """
+    from crm.models import WorkspaceMember, BoardMember
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    
+    workspace = board.workspace
+    ws_members = WorkspaceMember.objects.filter(workspace=workspace).select_related('user')
+    board_members = BoardMember.objects.filter(board=board).select_related('user', 'added_by')
+    
+    board_overrides = {bm.user_id: bm for bm in board_members}
+    
+    effective_members = []
+    seen_user_ids = set()
+    
+    for wm in ws_members:
+        user = wm.user
+        role = wm.role
+        added_by_username = wm.added_by.username if wm.added_by else 'system'
+        added_at = wm.added_at
+        
+        # Check for board override
+        if user.id in board_overrides:
+            bm = board_overrides[user.id]
+            role = bm.role
+            added_by_username = bm.added_by.username if bm.added_by else added_by_username
+            added_at = bm.added_at
+            
+        effective_members.append({
+            'id': user.id,
+            'user': user,
+            'role': role,
+            'added_at': added_at,
+            'added_by_username': added_by_username
+        })
+        seen_user_ids.add(user.id)
+        
+    for user_id, bm in board_overrides.items():
+        if user_id not in seen_user_ids:
+            effective_members.append({
+                'id': bm.user.id,
+                'user': bm.user,
+                'role': bm.role,
+                'added_at': bm.added_at,
+                'added_by_username': bm.added_by.username if bm.added_by else 'system'
+            })
+            
+    return effective_members
+

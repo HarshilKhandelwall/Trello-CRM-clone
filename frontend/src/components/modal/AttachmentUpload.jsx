@@ -22,7 +22,9 @@ const AttachmentUpload = ({ cardId, onUploadComplete }) => {
             setUploading(true);
             setError(null);
 
-            const result = await attachments.upload(cardId, file);
+            const formData = new FormData();
+            formData.append('file', file);
+            const result = await attachments.upload(cardId, formData);
 
             if (onUploadComplete) {
                 onUploadComplete(result);

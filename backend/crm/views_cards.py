@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication
+from crm.auth import CsrfExemptSessionAuthentication
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from crm.models import Card, List, BoardMember
@@ -11,7 +11,7 @@ from crm.permissions import user_can_access_board
 
 
 class CreateCardView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -20,6 +20,7 @@ class CreateCardView(APIView):
         
         title = request.data.get('title')
         list_id = request.data.get('list')
+        position = request.data.get('position', 0)
 
         if not title or not list_id:
             return Response({'error': 'title and list are required'}, status=400)
@@ -33,6 +34,7 @@ class CreateCardView(APIView):
         card = Card.objects.create(
             title=title,
             list=lst,
+            position=position,
             created_by=request.user,
         )
         
@@ -63,7 +65,7 @@ class CreateCardView(APIView):
 
 
 class CardDetailView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, card_id):
@@ -115,8 +117,7 @@ class CardDetailView(APIView):
     def delete(self, request, card_id):
         from channels.layers import get_channel_layer
         from asgiref.sync import async_to_sync
-        from django.db import connection
-        
+
         card = get_object_or_404(Card, id=card_id)
         board = card.list.board
         list_id = card.list.id
@@ -126,19 +127,12 @@ class CardDetailView(APIView):
 
         card_id_to_delete = card.id
         card_title = card.title
-        
-        # SQLite FK workaround: Disable FK checks for this specific deletion
-        # This is necessary because of circular dependencies and CASCADE issues in SQLite
-        with connection.cursor() as cursor:
-            # Turn off FK constraints
-            cursor.execute("PRAGMA foreign_keys = OFF")
-            
-            try:
-                # Delete the card - CASCADE will delete related objects
-                card.delete()
-            finally:
-                # Always re-enable FK constraints
-                cursor.execute("PRAGMA foreign_keys = ON")
+
+        # ── C-7 FIX: Django ORM already handles CASCADE deletes in Python,
+        # so disabling SQLite FK constraints is unnecessary and unsafe.
+        # Use a clean atomic transaction instead.
+        with transaction.atomic():
+            card.delete()
         
         # Log activity AFTER deletion (don't reference the deleted card)
         log_activity(
@@ -166,7 +160,7 @@ class CardDetailView(APIView):
 
 
 class MoveCardView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     @transaction.atomic
@@ -176,6 +170,7 @@ class MoveCardView(APIView):
         
         card_id = request.data.get('card_id')
         to_list_id = request.data.get('to_list')
+        position = request.data.get('position', 0)
 
         if not card_id or not to_list_id:
             return Response({'error': 'card_id and to_list required'}, status=400)
@@ -185,12 +180,37 @@ class MoveCardView(APIView):
         to_list = get_object_or_404(List, id=to_list_id)
         board = card.list.board
 
+        # ── H-1 FIX: ensure target list is on the same board as the card.
+        # Cross-board moves must go through MoveCardToBoardView which checks
+        # both source and destination board permissions explicitly.
+        if to_list.board_id != board.id:
+            return Response(
+                {'error': 'Target list must be on the same board. Use move-to-board for cross-board moves.'},
+                status=400
+            )
+
         if not user_can_access_board(request.user, board, min_role='EDITOR'):
             return Response({'error': 'forbidden'}, status=403)
 
-        # Update card list (position is not a field on Card model)
-        card.list = to_list
-        card.save(update_fields=['list'])
+        # ── H-1 FIX: Wrap multiple position updates in an atomic transaction to prevent race conditions
+        from django.db import models, transaction
+        with transaction.atomic():
+            if old_list_id == to_list.id:
+                old_position = card.position
+                if old_position < position:
+                    Card.objects.filter(list=to_list, position__gt=old_position, position__lte=position).update(position=models.F('position') - 1)
+                elif old_position > position:
+                    Card.objects.filter(list=to_list, position__gte=position, position__lt=old_position).update(position=models.F('position') + 1)
+            else:
+                # Shift cards down in target list to make room
+                Card.objects.filter(list=to_list, position__gte=position).update(position=models.F('position') + 1)
+                # Optionally shift cards up in old list
+                Card.objects.filter(list_id=old_list_id, position__gt=card.position).update(position=models.F('position') - 1)
+    
+            # Update card list and position
+            card.list = to_list
+            card.position = position
+            card.save(update_fields=['list', 'position'])
         
         # Log activity
         old_list = get_object_or_404(List, id=old_list_id)
@@ -224,7 +244,7 @@ class MoveCardView(APIView):
 
 class CopyCardView(APIView):
     """Copy a card with all its details to the same or different list"""
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     @transaction.atomic
@@ -328,7 +348,7 @@ class MoveCardToBoardView(APIView):
     - Card members are cleared (they may not be members of the destination board)
     - Labels are preserved (labels are now global)
     """
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     @transaction.atomic

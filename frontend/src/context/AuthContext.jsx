@@ -36,11 +36,13 @@ export const AuthProvider = ({ children }) => {
             if (res.ok) {
                 const data = await res.json();
                 csrfTokenCache = data.csrfToken || getCookie('csrftoken') || '';
+                window.csrfToken = csrfTokenCache;
             }
         } catch (error) {
             console.error('Failed to fetch CSRF token:', error);
         }
     };
+
 
 
 
@@ -86,14 +88,65 @@ export const AuthProvider = ({ children }) => {
             body: JSON.stringify({ username, password }),
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Login failed');
+            throw new Error(data.error || 'Login failed');
         }
 
-        const userData = await response.json();
-        setUser(userData);
-        return userData;
+        // If OTP is required, return the signal — do NOT set user yet
+        if (data.otp_required) {
+            return data; // { otp_required: true, destination: '...' }
+        }
+
+        // Fallback: direct login (should not happen with OTP enabled)
+        setUser(data);
+        return data;
+    };
+
+    const verifyOtp = async (otp) => {
+        await ensureCsrfCookie();
+
+        const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken() || '',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ otp }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Verification failed');
+        }
+
+        setUser(data);
+        return data;
+    };
+
+    const resendOtp = async () => {
+        await ensureCsrfCookie();
+
+        const response = await fetch(`${API_BASE_URL}/api/auth/resend-otp/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken() || '',
+            },
+            credentials: 'include',
+            body: JSON.stringify({}),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to resend code');
+        }
+
+        return data;
     };
 
     const register = async (username, email, password, firstName = '', lastName = '') => {
@@ -146,6 +199,8 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         login,
+        verifyOtp,
+        resendOtp,
         register,
         logout,
         checkAuth,

@@ -51,6 +51,10 @@ class LabelUpdateDeleteView(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, label_id):
+        # ── C-1 FIX: Only administrators can modify global labels
+        if not (request.user.is_superuser or request.user.is_staff):
+            return Response({'error': 'Only administrators can modify global labels'}, status=403)
+
         label = get_object_or_404(Label, id=label_id)
         serializer = LabelSerializer(label, data=request.data, partial=True)
         if serializer.is_valid():
@@ -59,6 +63,10 @@ class LabelUpdateDeleteView(APIView):
         return Response(serializer.errors, status=400)
 
     def delete(self, request, label_id):
+        # ── C-1 FIX: Only administrators can delete global labels
+        if not (request.user.is_superuser or request.user.is_staff):
+            return Response({'error': 'Only administrators can delete global labels'}, status=403)
+
         label = get_object_or_404(Label, id=label_id)
         label.delete()
         return Response(status=204)

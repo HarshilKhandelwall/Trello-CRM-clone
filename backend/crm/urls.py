@@ -7,7 +7,7 @@ from crm.views_boards import BoardBackgroundView, BoardDetailView
 from crm.views_lists import ListCreateView, ListDetailView, MoveListView
 from crm.views_cards import CreateCardView, MoveCardView, CardDetailView, CopyCardView, MoveCardToBoardView
 from crm.views_archive import ArchiveCardView, RestoreCardView, ArchivedCardsView
-from crm.views_attachments import AttachmentUploadView, AttachmentDetailView
+from crm.views_attachments import AttachmentUploadView, AttachmentDetailView, AttachmentDownloadView
 from crm.views_checklists import ChecklistViewSet, ChecklistItemViewSet
 from crm.views_comments import CommentViewSet
 from crm.views_members import AddCardMemberView, RemoveCardMemberView
@@ -15,7 +15,7 @@ from crm.views_board_members import BoardMembersView, BoardMemberDetailView, Use
 from crm.views_activities import BoardActivitiesView
 from crm.views_tasks import TodayTasksView
 from crm.views_labels import LabelListCreateView, LabelUpdateDeleteView
-from crm.views_search import CardSearchView, CardAutocompleteView
+from crm.views_search import CardSearchView, CardAutocompleteView, WorkspaceSearchView
 from crm.views_notifications import (
     NotificationListView, 
     MarkNotificationReadView, 
@@ -25,6 +25,8 @@ from crm.views_notifications import (
 from crm.views_auth import (
     RegisterView,
     LoginView,
+    VerifyOtpView,
+    ResendOtpView,
     LogoutView,
     CurrentUserView,
     GetCSRFTokenView
@@ -34,6 +36,8 @@ urlpatterns = [
     # Authentication
     path('api/auth/register/', RegisterView.as_view()),
     path('api/auth/login/', LoginView.as_view()),
+    path('api/auth/verify-otp/', VerifyOtpView.as_view()),
+    path('api/auth/resend-otp/', ResendOtpView.as_view()),
     path('api/auth/logout/', LogoutView.as_view()),
     path('api/auth/user/', CurrentUserView.as_view()),
     path('api/auth/csrf/', GetCSRFTokenView.as_view()),
@@ -57,6 +61,7 @@ urlpatterns = [
     path('api/boards/<int:board_id>/members/<int:user_id>/', BoardMemberDetailView.as_view()),
     path('api/boards/<int:board_id>/search/', CardSearchView.as_view()),
     path('api/boards/<int:board_id>/cards/autocomplete/', CardAutocompleteView.as_view()),
+    path('api/workspaces/<int:workspace_id>/search/', WorkspaceSearchView.as_view()),
     
     # Labels
     path('api/boards/<int:board_id>/labels/', LabelListCreateView.as_view()),
@@ -80,6 +85,7 @@ urlpatterns = [
     # Attachments
     path('api/cards/<int:card_id>/attachments/', AttachmentUploadView.as_view()),
     path('api/attachments/<int:attachment_id>/', AttachmentDetailView.as_view()),
+    path('api/attachments/<int:attachment_id>/download/', AttachmentDownloadView.as_view()),
 
     # Checklists
     path('api/checklists/', ChecklistViewSet.as_view({'post': 'create'})),

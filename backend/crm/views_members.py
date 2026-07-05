@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from crm.models import Card, BoardMember, User, Notification
 from crm.serializers import CardSerializer
 from crm.auth import CsrfExemptSessionAuthentication
-from crm.utils import broadcast_to_board, send_notification_to_user
+from crm.utils import broadcast_to_board, send_notification_to_user, log_activity
 from crm.permissions import user_can_access_board
 
 
@@ -23,13 +23,25 @@ class AddCardMemberView(APIView):
         if not user_can_access_board(request.user, board, min_role='EDITOR'):
             return Response({'error': 'forbidden'}, status=403)
 
-        # Check if user to be added is a board member
+        # ── H-2 FIX: use the full permission check (workspace membership + board overrides)
+        # instead of querying the BoardMember table directly. This correctly handles
+        # users who have access via workspace membership but have no BoardMember row.
         user = get_object_or_404(User, id=user_id)
-        if not BoardMember.objects.filter(board=board, user=user).exists():
-            return Response({'error': 'User is not a board member'}, status=400)
+        if not user_can_access_board(user, board, min_role='VIEWER'):
+            return Response({'error': 'User does not have access to this board'}, status=400)
 
         # Add member to card
         card.members.add(user)
+        
+        # ── H-1 FIX: Log activity for member assignment
+        log_activity(
+            board=board,
+            user=request.user,
+            action_type='member_added',
+            description=f'added {user.username} to "{card.title}"',
+            card=card,
+            metadata={'member_id': user.id, 'member_name': user.username}
+        )
         
         serializer = CardSerializer(card)
         
@@ -84,6 +96,16 @@ class RemoveCardMemberView(APIView):
         
         # Remove member from card
         card.members.remove(user)
+        
+        # ── H-1 FIX: Log activity for member removal
+        log_activity(
+            board=board,
+            user=request.user,
+            action_type='member_removed',
+            description=f'removed {user.username} from "{card.title}"',
+            card=card,
+            metadata={'member_id': user.id, 'member_name': user.username}
+        )
         
         serializer = CardSerializer(card)
         

@@ -13,7 +13,7 @@ const SortableCard = ({ card }) => {
         transition,
         isDragging,
     } = useSortable({
-        id: card.id,
+        id: `card-${card.id}`,
         data: { type: 'card', card },
     });
 

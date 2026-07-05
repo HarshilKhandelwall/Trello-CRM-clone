@@ -4,7 +4,7 @@ from datetime import timedelta
 from crm.models import Card, Notification
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from crm.tasks import move_old_leads_task
+from crm.tasks import move_old_leads_task, cleanup_old_notifications_task
 import logging
 
 logger = logging.getLogger(__name__)
@@ -273,6 +273,15 @@ def start_scheduler():
         hour=2,
         minute=30,
         id='move_old_leads_task'
+    )
+    
+    # ── M-7 FIX: Add daily task to clean up old notifications at 3:00 AM
+    scheduler.add_job(
+        cleanup_old_notifications_task,
+        'cron',
+        hour=3,
+        minute=0,
+        id='cleanup_old_notifications_task'
     )
     
     try:

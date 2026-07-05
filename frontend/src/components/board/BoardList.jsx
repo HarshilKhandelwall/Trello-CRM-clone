@@ -19,7 +19,7 @@ const BoardList = ({ list }) => {
         transition,
         isDragging,
     } = useSortable({
-        id: list.id,
+        id: `list-${list.id}`,
         data: { type: 'list', list },
     });
 
@@ -34,12 +34,12 @@ const BoardList = ({ list }) => {
             <ListHeader list={list} dragHandleProps={{ ...attributes, ...listeners }} />
 
             <SortableContext
-                items={list.cards?.map(card => card.id) || []}
+                items={list.cards?.map(card => `card-${card.id}`) || []}
                 strategy={verticalListSortingStrategy}
             >
                 <div className="list-cards">
                     {list.cards?.map((card) => (
-                        <SortableCard key={card.id} card={card} />
+                        <SortableCard key={`card-${card.id}`} card={card} />
                     ))}
                 </div>
             </SortableContext>

@@ -102,6 +102,7 @@ class Card(models.Model):
     members = models.ManyToManyField(User, related_name='assigned_cards', blank=True)
 
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='cards')
+    position = models.PositiveIntegerField(default=0)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     
