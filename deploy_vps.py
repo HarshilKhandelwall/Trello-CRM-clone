@@ -14,12 +14,24 @@ import time
 HOST = "46.37.122.138"
 PORT = 22
 USER = "root"
-PASSWORD = "9?vX&lG%,M'R#q^J"
 DOMAIN = "crm.welinkglobalsolutions.com"
 APP_DIR = "/home/crm/app"
 LOCAL_PROJECT = r"c:\New folder\Trello dev build"
 
-SECRET_KEY = "FvXjWCHZHFozmAd4rt7WKrXoE84AuZvZappmsdVLvJzqeyjNDmXyD-J8YCLcB5AXE64"
+# Load password from environment variable or prompt securely
+PASSWORD = os.environ.get("VPS_PASSWORD")
+if not PASSWORD:
+    try:
+        import getpass
+        PASSWORD = getpass.getpass("Enter VPS SSH password (or set VPS_PASSWORD env var): ")
+    except Exception:
+        raise ValueError("VPS_PASSWORD environment variable must be set in non-interactive environments.")
+
+# Load Django secret key from environment or generate a secure one dynamically
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    import secrets
+    SECRET_KEY = secrets.token_urlsafe(50)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def run(ssh, cmd, desc="", ignore_errors=False):
@@ -43,7 +55,7 @@ def upload_tar(ssh, local_dir, remote_dir, excludes=None):
     """Create tarball in memory and stream it to the server."""
     excludes = excludes or []
     print(f"\n{'='*60}")
-    print(f"  Uploading {local_dir} → {remote_dir}")
+    print(f"  Uploading {local_dir} -> {remote_dir}")
 
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w:gz") as tar:
@@ -113,7 +125,15 @@ print("="*60)
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 print("\nConnecting to server...")
-ssh.connect(HOST, PORT, USER, PASSWORD, timeout=30)
+try:
+    ssh.connect(HOST, PORT, USER, PASSWORD, timeout=30,
+                look_for_keys=False, allow_agent=False)
+except paramiko.ssh_exception.AuthenticationException:
+    # Try keyboard-interactive auth
+    transport = paramiko.Transport((HOST, PORT))
+    transport.connect()
+    transport.auth_interactive(USER, lambda title, instructions, fields: [PASSWORD] * len(fields))
+    ssh._transport = transport
 print("  Connected!")
 
 # ── 1. System packages ────────────────────────────────────────────────────────
@@ -165,7 +185,7 @@ DJANGO_DEBUG=False
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,{DOMAIN},www.{DOMAIN}
 DJANGO_CORS_ALLOWED_ORIGINS=https://{DOMAIN}
 DJANGO_DB_ENGINE=django.db.backends.sqlite3
-DJANGO_DB_NAME=
+DJANGO_DB_NAME={APP_DIR}/backend/db.sqlite3
 DJANGO_CHANNEL_BACKEND=memory
 DJANGO_REDIS_URL=redis://localhost:6379/0
 """
@@ -214,7 +234,7 @@ nginx_content = f"""upstream daphne {{
 
 server {{
     listen 80;
-    server_name {DOMAIN} www.{DOMAIN};
+    server_name {DOMAIN};
     client_max_body_size 50M;
 
     location /static/ {{
@@ -260,9 +280,9 @@ run(ssh, "ufw allow OpenSSH && ufw allow 'Nginx Full' && ufw --force enable",
 # ── 13. SSL via Certbot ───────────────────────────────────────────────────────
 run(ssh, "apt-get install -y -qq certbot python3-certbot-nginx", "Installing Certbot")
 ssl_cmd = (
-    f"certbot --nginx -d {DOMAIN} -d www.{DOMAIN} "
+    f"certbot --nginx -d {DOMAIN} "
     f"--non-interactive --agree-tos --email admin@welinkglobalsolutions.com "
-    f"--redirect"
+    f"--redirect --expand"
 )
 run(ssh, ssl_cmd, "Obtaining SSL certificate")
 
