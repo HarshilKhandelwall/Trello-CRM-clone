@@ -55,7 +55,11 @@ const BoardMembersModal = ({ boardId, currentUser, onClose, initialShowInvite = 
             setError(null);
             const res = await boardMembersApi.list(boardId);
             // apiClient returns parsed JSON directly (not Axios { data: ... })
-            const { members: data, me } = res;
+            // Guard against unexpected shapes (e.g. plain array or null from old API)
+            const rawData = res && typeof res === 'object' && !Array.isArray(res) ? res : {};
+            const data = Array.isArray(rawData.members) ? rawData.members
+                       : Array.isArray(res) ? res : [];
+            const me = rawData.me ?? null;
             // Sort: owner first, then by role, then alphabetically
             const sorted = [...data].sort((a, b) => {
                 const rd = (ROLE_ORDER[a.role] ?? 99) - (ROLE_ORDER[b.role] ?? 99);
