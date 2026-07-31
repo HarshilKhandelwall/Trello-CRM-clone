@@ -145,7 +145,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Include React's built static assets so collectstatic picks them up
 STATICFILES_DIRS = [
     REACT_BUILD_DIR / 'static',
-] if REACT_BUILD_DIR.exists() else []
+] if (REACT_BUILD_DIR / 'static').exists() else []
 # WhiteNoise compression + caching for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -177,7 +177,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ⚠️  Change this to your real email address before using.
 SUPERADMIN_OTP_EMAIL = os.environ.get('SUPERADMIN_OTP_EMAIL', 'superadmin@example.com')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

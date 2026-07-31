@@ -34,6 +34,16 @@ const CardModalContent = ({ card, listName, onClose }) => {
         return cardsApi.archive(cardId);
     }, [boardContext]);
 
+    // Dynamically derive currentCard from board state if available so changes (like member assignment) update in real-time
+    const currentCard = React.useMemo(() => {
+        if (!board || !board.lists) return card;
+        for (const list of board.lists) {
+            const found = list.cards?.find(c => c.id === card.id);
+            if (found) return found;
+        }
+        return card;
+    }, [board, card]);
+
     const [title, setTitle] = useState(card.title);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [description, setDescription] = useState(card.description || '');
@@ -212,6 +222,35 @@ const CardModalContent = ({ card, listName, onClose }) => {
             <div className="card-modal-body">
                 {/* Main content (552px) */}
                 <div className="card-modal-main">
+                    {/* Members section */}
+                    {currentCard.members && currentCard.members.length > 0 && (
+                        <div className="card-modal-members-section">
+                            <h4>Members</h4>
+                            <div className="card-modal-members-row">
+                                {currentCard.members.map((member) => {
+                                    const displayName = member.username || member.email || '?';
+                                    const initial = displayName.charAt(0).toUpperCase();
+                                    return (
+                                        <div
+                                            key={member.id}
+                                            className="card-modal-member-badge"
+                                            title={displayName}
+                                        >
+                                            {initial}
+                                        </div>
+                                    );
+                                })}
+                                <button
+                                    className="card-modal-member-add-chip"
+                                    onClick={() => setShowMembersPopover(true)}
+                                    title="Add member"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Labels */}
                     {card.labels && card.labels.length > 0 && (
                         <div className="card-modal-labels">
@@ -513,7 +552,11 @@ const CardModalContent = ({ card, listName, onClose }) => {
                         card={card}
                         onClose={() => setShowMembersPopover(false)}
                         onUpdate={() => {
-                            window.location.reload();
+                            if (boardContext?.reloadBoard) {
+                                boardContext.reloadBoard();
+                            } else {
+                                window.location.reload();
+                            }
                         }}
                     />
                 </div>

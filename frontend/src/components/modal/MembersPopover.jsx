@@ -10,15 +10,32 @@ const MembersPopover = ({ card, onClose, onUpdate }) => {
     const [loading, setLoading] = useState(false);
     const popoverRef = useRef(null);
 
-    // Get board members
+    // Get board members safely
     const boardMembers = board?.members || [];
+    // card.members contains User objects [{ id: <userId>, username, email }]
     const cardMemberIds = card.members?.map(m => m.id) || [];
 
+    // Helper to extract normalized user details from a board member item
+    const getMemberUser = (member) => {
+        const userId = member.user_id || member.user?.id || member.id;
+        const username = member.user?.username || member.username || '';
+        const email = member.user?.email || member.email || '';
+        const firstName = member.user?.first_name || '';
+        const lastName = member.user?.last_name || '';
+        const fullName = [firstName, lastName].filter(Boolean).join(' ') || username;
+        return { userId, username, email, fullName };
+    };
+
     // Filter members based on search
-    const filteredMembers = boardMembers.filter(member =>
-        member.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        member.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredMembers = boardMembers.filter(member => {
+        const { username, email, fullName } = getMemberUser(member);
+        const q = searchQuery.toLowerCase();
+        return (
+            username.toLowerCase().includes(q) ||
+            email.toLowerCase().includes(q) ||
+            fullName.toLowerCase().includes(q)
+        );
+    });
 
     // Close on outside click
     useEffect(() => {
@@ -32,15 +49,15 @@ const MembersPopover = ({ card, onClose, onUpdate }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [onClose]);
 
-    const handleToggleMember = async (memberId) => {
+    const handleToggleMember = async (userId) => {
         setLoading(true);
         try {
-            const isAssigned = cardMemberIds.includes(memberId);
+            const isAssigned = cardMemberIds.includes(userId);
 
             if (isAssigned) {
-                await cardMembers.remove(card.id, memberId);
+                await cardMembers.remove(card.id, userId);
             } else {
-                await cardMembers.add(card.id, memberId);
+                await cardMembers.add(card.id, userId);
             }
 
             if (onUpdate) onUpdate();
@@ -85,21 +102,22 @@ const MembersPopover = ({ card, onClose, onUpdate }) => {
                     </div>
                 ) : (
                     filteredMembers.map(member => {
-                        const isAssigned = cardMemberIds.includes(member.id);
+                        const { userId, username, email, fullName } = getMemberUser(member);
+                        const isAssigned = cardMemberIds.includes(userId);
 
                         return (
                             <button
-                                key={member.id}
+                                key={userId}
                                 className={`member-item ${isAssigned ? 'assigned' : ''}`}
-                                onClick={() => handleToggleMember(member.id)}
+                                onClick={() => handleToggleMember(userId)}
                                 disabled={loading}
                             >
                                 <div className="member-avatar">
-                                    {getInitials(member.username)}
+                                    {getInitials(username)}
                                 </div>
                                 <div className="member-info">
-                                    <div className="member-name">{member.username}</div>
-                                    <div className="member-email">{member.email}</div>
+                                    <div className="member-name">{fullName}</div>
+                                    <div className="member-email">{email || `@${username}`}</div>
                                 </div>
                                 {isAssigned && (
                                     <div className="member-check">

@@ -43,9 +43,36 @@ export const workspaceMembers = {
 // ========== USERS ==========
 
 export const users = {
-    search: (query = '') =>
-        apiClient.get('/api/users/search/', { params: { q: query } }),
+    search: (query = '', boardId = null) => {
+        const params = { q: query };
+        if (boardId) params.board_id = boardId;
+        return apiClient.get('/api/users/search/', { params });
+    },
 };
+
+
+// ========== BOARD MEMBERS ==========
+
+export const boardMembers = {
+    /** Returns { members: [...], me: {...} } */
+    list: (boardId) =>
+        apiClient.get(`/api/boards/${boardId}/members/`),
+
+    add: (boardId, userId, role = 'EDITOR') =>
+        apiClient.post(`/api/boards/${boardId}/members/`, { user_id: userId, role }),
+
+    updateRole: (boardId, userId, role) =>
+        apiClient.patch(`/api/boards/${boardId}/members/${userId}/`, { role }),
+
+    remove: (boardId, userId) =>
+        apiClient.delete(`/api/boards/${boardId}/members/${userId}/`),
+
+    /** Self-removal: leaves the board without needing admin rights */
+    leaveBoard: (boardId) =>
+        apiClient.delete(`/api/boards/${boardId}/members/me/`),
+};
+
+
 
 // ========== BOARDS ==========
 

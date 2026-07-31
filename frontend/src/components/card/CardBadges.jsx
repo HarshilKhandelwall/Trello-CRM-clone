@@ -27,49 +27,71 @@ const CardBadges = ({ card }) => {
     const commentCount = card.comments_count || 0;
     const attachmentCount = card.attachments ? card.attachments.length : 0;
 
-    // Don't render if no badges to show
-    if (!card.due_at && !checklistProgress && !hasDescription && commentCount === 0 && attachmentCount === 0) {
+    const hasMembers = card.members && card.members.length > 0;
+
+    // Don't render if no badges or members to show
+    if (!card.due_at && !checklistProgress && !hasDescription && commentCount === 0 && attachmentCount === 0 && !hasMembers) {
         return null;
     }
 
     return (
         <div className="card-badges">
-            {/* Due Date Badge */}
-            {card.due_at && (
-                <div className="card-badge card-badge-due">
-                    <span className="material-icons" style={{ fontSize: '14px' }}>access_time</span>
-                    <span style={{ fontSize: '11px' }}>{new Date(card.due_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                </div>
-            )}
+            <div className="card-badges-left">
+                {/* Due Date Badge */}
+                {card.due_at && (
+                    <div className="card-badge card-badge-due">
+                        <span className="material-icons" style={{ fontSize: '14px' }}>access_time</span>
+                        <span style={{ fontSize: '11px' }}>{new Date(card.due_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                    </div>
+                )}
 
-            {/* Description Badge */}
-            {hasDescription && (
-                <div className="card-badge">
-                    <span className="material-icons" style={{ fontSize: '14px' }}>description</span>
-                </div>
-            )}
+                {/* Description Badge */}
+                {hasDescription && (
+                    <div className="card-badge">
+                        <span className="material-icons" style={{ fontSize: '14px' }}>description</span>
+                    </div>
+                )}
 
-            {/* Checklist Progress Badge */}
-            {checklistProgress && (
-                <div className={`card-badge card-badge-checklist ${checklistProgress.completed === checklistProgress.total ? 'complete' : ''}`}>
-                    <span className="material-icons" style={{ fontSize: '14px' }}>checklist</span>
-                    <span style={{ fontSize: '11px' }}>{checklistProgress.completed}/{checklistProgress.total}</span>
-                </div>
-            )}
+                {/* Checklist Progress Badge */}
+                {checklistProgress && (
+                    <div className={`card-badge card-badge-checklist ${checklistProgress.completed === checklistProgress.total ? 'complete' : ''}`}>
+                        <span className="material-icons" style={{ fontSize: '14px' }}>checklist</span>
+                        <span style={{ fontSize: '11px' }}>{checklistProgress.completed}/{checklistProgress.total}</span>
+                    </div>
+                )}
 
-            {/* Comment Count Badge */}
-            {commentCount > 0 && (
-                <div className="card-badge">
-                    <span className="material-icons" style={{ fontSize: '14px' }}>question_answer</span>
-                    <span style={{ fontSize: '11px' }}>{commentCount}</span>
-                </div>
-            )}
+                {/* Comment Count Badge */}
+                {commentCount > 0 && (
+                    <div className="card-badge">
+                        <span className="material-icons" style={{ fontSize: '14px' }}>question_answer</span>
+                        <span style={{ fontSize: '11px' }}>{commentCount}</span>
+                    </div>
+                )}
 
-            {/* Attachment Count Badge */}
-            {attachmentCount > 0 && (
-                <div className="card-badge">
-                    <span className="material-icons" style={{ fontSize: '14px' }}>attach_file</span>
-                    <span style={{ fontSize: '11px' }}>{attachmentCount}</span>
+                {/* Attachment Count Badge */}
+                {attachmentCount > 0 && (
+                    <div className="card-badge">
+                        <span className="material-icons" style={{ fontSize: '14px' }}>attach_file</span>
+                        <span style={{ fontSize: '11px' }}>{attachmentCount}</span>
+                    </div>
+                )}
+            </div>
+
+            {/* Assigned Members */}
+            {hasMembers && (
+                <div className="card-members-avatars">
+                    {card.members.map((member) => {
+                        const name = member.username || member.email || '?';
+                        return (
+                            <span
+                                key={member.id}
+                                className="card-member-avatar-chip"
+                                title={name}
+                            >
+                                {name.charAt(0).toUpperCase()}
+                            </span>
+                        );
+                    })}
                 </div>
             )}
         </div>

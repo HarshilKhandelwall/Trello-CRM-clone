@@ -31,6 +31,7 @@ const BoardContainer = ({ sidebarCollapsed }) => {
     const [showArchivedCards, setShowArchivedCards] = useState(false);
     const [showTodayTasks, setShowTodayTasks] = useState(false);
     const [showBoardMembers, setShowBoardMembers] = useState(false);
+    const [showInviteOnMembersModal, setShowInviteOnMembersModal] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
     const { board, moveCard, moveList, reloadBoard, restoreCard, deleteBoard } = useBoard();
     const { searchTerm, selectedLabels, selectedMembers, dueDateFilter } = useFilters();
@@ -294,6 +295,42 @@ const BoardContainer = ({ sidebarCollapsed }) => {
                         </svg>
                         To-Do
                     </button>
+                    <button
+                        className="board-add-member-button"
+                        onClick={() => {
+                            setShowInviteOnMembersModal(true);
+                            setShowBoardMembers(true);
+                            setShowBackgroundPicker(false);
+                            setShowActivityFeed(false);
+                            setShowActivitySidebar(false);
+                            setShowArchivedCards(false);
+                            setShowTodayTasks(false);
+                        }}
+                        title="Add member to board"
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        Add Member
+                    </button>
+                    <button
+                        className="board-members-button"
+                        onClick={() => {
+                            setShowInviteOnMembersModal(false);
+                            setShowBoardMembers(true);
+                            setShowBackgroundPicker(false);
+                            setShowActivityFeed(false);
+                            setShowActivitySidebar(false);
+                            setShowArchivedCards(false);
+                            setShowTodayTasks(false);
+                        }}
+                        title="Manage board members"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2 .09a3.5 3.5 0 1 1 0 5.82A5 5 0 0 0 1 17a1 1 0 0 1-2 0 7 7 0 0 1 10.09-6.91zM14.5 9a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm.5 3v1h1a.5.5 0 0 1 0 1H15v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0z"/>
+                        </svg>
+                        Members
+                    </button>
                     {board.members && board.members.length > 0 && (
                         <MemberAvatarGroup
                             members={board.members}
@@ -429,8 +466,13 @@ const BoardContainer = ({ sidebarCollapsed }) => {
             {showBoardMembers && (
                 <BoardMembersModal
                     boardId={board.id}
-                    currentUserId={board.created_by}
-                    onClose={() => setShowBoardMembers(false)}
+                    currentUser={user}
+                    initialShowInvite={showInviteOnMembersModal}
+                    onClose={() => {
+                        setShowBoardMembers(false);
+                        setShowInviteOnMembersModal(false);
+                        if (reloadBoard) reloadBoard();
+                    }}
                 />
             )}
 

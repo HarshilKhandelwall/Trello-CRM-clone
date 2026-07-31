@@ -47,6 +47,45 @@
     background: rgba(255, 255, 255, 0.4);
 }
 
+.board-members-button,
+.board-add-member-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.board-add-member-button {
+    background: #0052cc;
+    color: white;
+    font-weight: 600;
+}
+
+.board-add-member-button:hover {
+    background: #0065ff;
+}
+
+.board-members-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.light-background .board-members-button {
+    background: rgba(0, 0, 0, 0.1);
+    color: #172B4D;
+}
+
+.light-background .board-members-button:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
 .light-background .board-background-button {
     background: rgba(0, 0, 0, 0.1);
     color: #172B4D;
@@ -176,3 +215,36 @@
     font-size: var(--font-size-md);
     opacity: 0.8;
 }
+
+/* Board action buttons (Todo, Members, Background) — shared style */
+.board-todo-button,
+.board-members-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.board-todo-button:hover,
+.board-members-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.light-background .board-todo-button,
+.light-background .board-members-button {
+    background: rgba(0, 0, 0, 0.1);
+    color: #172B4D;
+}
+
+.light-background .board-todo-button:hover,
+.light-background .board-members-button:hover {
+    background: rgba(0, 0, 0, 0.15);
+}

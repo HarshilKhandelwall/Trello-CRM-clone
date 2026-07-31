@@ -1,225 +1,492 @@
-.board-members-modal {
-    background: white;
-    border-radius: 12px;
-    width: 600px;
-    max-width: 90vw;
-    max-height: 80vh;
+﻿/* â”€â”€ Overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: bm-fade-in 0.18s ease;
+}
+
+@keyframes bm-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* â”€â”€ Modal Shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-modal {
+    background: #1a1f2e;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    width: 560px;
+    max-width: 94vw;
+    max-height: 86vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
     overflow: hidden;
+    animation: bm-slide-up 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
 }
 
-.members-modal-header {
+@keyframes bm-slide-up {
+    from { transform: translateY(24px) scale(0.97); opacity: 0; }
+    to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 20px 24px;
-    border-bottom: 1px solid #e4e6e9;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    background: linear-gradient(135deg, #1e2d5a 0%, #162040 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
 }
 
-.members-modal-header h2 {
+.bm-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.bm-header-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(99, 179, 237, 0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #63b3ed;
+    flex-shrink: 0;
+}
+
+.bm-title {
     margin: 0;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
-    color: #172b4d;
+    color: #f0f4ff;
+    letter-spacing: -0.3px;
 }
 
-.members-modal-content {
+.bm-subtitle {
+    font-size: 12px;
+    color: #8899bb;
+    margin-top: 2px;
+    display: block;
+}
+
+.bm-close-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255,255,255,0.07);
+    color: #8899bb;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.bm-close-btn:hover {
+    background: rgba(255,255,255,0.14);
+    color: #f0f4ff;
+}
+
+/* â”€â”€ My-Role Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-my-role-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+}
+
+.bm-my-role-banner span { color: #8899bb; }
+.bm-my-role-banner strong { color: #f0f4ff; font-weight: 600; }
+
+.bm-role-bg-owner  { background: rgba(168, 85, 247, 0.12); }
+.bm-role-bg-admin  { background: rgba(239, 68,  68, 0.10); }
+.bm-role-bg-editor { background: rgba(59, 130, 246, 0.10); }
+.bm-role-bg-viewer { background: rgba(34, 197, 94, 0.10);  }
+
+/* â”€â”€ Search Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-search-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+}
+
+.bm-search-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: #e2e8f0;
+    font-size: 13px;
+}
+
+.bm-search-input::placeholder { color: #4a5568; }
+
+.bm-search-clear {
+    background: none;
+    border: none;
+    color: #4a5568;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: color 0.15s;
+}
+.bm-search-clear:hover { color: #f0f4ff; }
+
+/* â”€â”€ Body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-body {
     flex: 1;
     overflow-y: auto;
-    padding: 16px 24px 24px;
-    background: #fafbfc;
+    padding: 12px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #2d3748 transparent;
 }
 
-/* Members List */
-.members-list {
+.bm-body::-webkit-scrollbar { width: 5px; }
+.bm-body::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 3px; }
+
+/* Loading */
+.bm-loading {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.member-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    background: white;
-    border-radius: 8px;
-    border: 2px solid #dfe1e6;
-    transition: all 0.15s ease;
-}
-
-.member-item:hover {
-    border-color: #0079bf;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.member-info {
-    display: flex;
     align-items: center;
     gap: 12px;
-    flex: 1;
+    padding: 40px;
+    color: #8899bb;
+    font-size: 14px;
 }
 
-.member-details {
+.bm-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: #63b3ed;
+    border-radius: 50%;
+    animation: bm-spin 0.7s linear infinite;
+}
+
+@keyframes bm-spin { to { transform: rotate(360deg); } }
+
+/* Error */
+.bm-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px;
+    color: #fc8181;
+    font-size: 14px;
+    flex-wrap: wrap;
+}
+
+.bm-retry-btn {
+    margin-left: auto;
+    padding: 4px 12px;
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 6px;
+    color: #fc8181;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.15s;
+}
+.bm-retry-btn:hover { background: rgba(239,68,68,0.25); }
+
+/* Empty */
+.bm-empty {
+    text-align: center;
+    padding: 40px 24px;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+/* â”€â”€ Members List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-members-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 12px;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.member-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #172b4d;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.you-badge {
-    font-size: 12px;
-    font-weight: 500;
-    color: #5e6c84;
-}
-
-.member-email {
-    font-size: 13px;
-    color: #5e6c84;
-}
-
-.member-actions {
+.bm-member-row {
     display: flex;
     align-items: center;
     gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.15s, border-color 0.15s;
 }
 
-/* Role Badges */
-.role-badge {
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-size: 12px;
+.bm-member-row:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.10);
+}
+
+.bm-member-row.bm-pending {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Avatar ring by role */
+.bm-avatar-wrap { border-radius: 50%; padding: 2px; }
+.bm-avatar-role-owner  { box-shadow: 0 0 0 2px #a855f7; }
+.bm-avatar-role-admin  { box-shadow: 0 0 0 2px #ef4444; }
+.bm-avatar-role-editor { box-shadow: 0 0 0 2px #3b82f6; }
+.bm-avatar-role-viewer { box-shadow: 0 0 0 2px #22c55e; }
+
+/* Member info */
+.bm-member-info { flex: 1; min-width: 0; }
+
+.bm-member-name {
+    font-size: 14px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.role-badge-admin {
-    background: #eb5a46;
-    color: white;
-}
-
-.role-badge-editor {
-    background: #0079bf;
-    color: white;
-}
-
-.role-badge-viewer {
-    background: #61bd4f;
-    color: white;
-}
-
-/* Role Selector */
-.role-selector {
-    padding: 6px 12px;
-    border: 2px solid #dfe1e6;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #172b4d;
-    background: white;
-    cursor: pointer;
-    transition: border-color 0.2s;
-}
-
-.role-selector:hover {
-    border-color: #0079bf;
-}
-
-.role-selector:focus {
-    outline: none;
-    border-color: #0079bf;
-}
-
-/* Remove Button */
-.remove-member-button {
-    width: 28px;
-    height: 28px;
-    border: none;
-    background: #eb5a46;
-    color: white;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
+    color: #e2e8f0;
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
+    gap: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.remove-member-button:hover {
-    background: #c9372c;
+.bm-you-chip {
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(99,179,237,0.18);
+    color: #63b3ed;
+    padding: 1px 6px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
 }
 
-/* Invite Section */
-.invite-section {
-    position: relative;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 2px solid #e4e6e9;
-}
-
-.invite-button {
+.bm-member-meta {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px;
-    background: #0079bf;
-    color: white;
+    margin-top: 2px;
+}
+
+.bm-member-email {
+    font-size: 12px;
+    color: #4a5568;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Source chips */
+.bm-source-chip {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    flex-shrink: 0;
+}
+
+.bm-source-chip.workspace {
+    background: rgba(251,191,36,0.12);
+    color: #fbbf24;
+    border: 1px solid rgba(251,191,36,0.25);
+}
+
+/* Actions area */
+.bm-member-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Role dropdown */
+.bm-role-select {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.12);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: auto;
+}
+
+.bm-role-select.bm-role-admin  { background: rgba(239,68,68,0.15);  color: #fc8181; border-color: rgba(239,68,68,0.3); }
+.bm-role-select.bm-role-editor { background: rgba(59,130,246,0.15); color: #93c5fd; border-color: rgba(59,130,246,0.3); }
+.bm-role-select.bm-role-viewer { background: rgba(34,197,94,0.12);  color: #86efac; border-color: rgba(34,197,94,0.3); }
+
+.bm-role-select option { background: #1a1f2e; color: #e2e8f0; }
+.bm-role-select:hover { border-color: rgba(255,255,255,0.25); }
+
+/* Static role pill */
+.bm-role-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.bm-role-pill.bm-role-owner  { background: rgba(168,85,247,0.18); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+.bm-role-pill.bm-role-admin  { background: rgba(239,68,68,0.15);  color: #fc8181; border: 1px solid rgba(239,68,68,0.3); }
+.bm-role-pill.bm-role-editor { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+.bm-role-pill.bm-role-viewer { background: rgba(34,197,94,0.12);  color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+
+/* Remove button */
+.bm-remove-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(239,68,68,0.3);
+    background: rgba(239,68,68,0.10);
+    color: #fc8181;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+
+.bm-remove-btn:hover { background: rgba(239,68,68,0.25); }
+
+/* Row-level spinner */
+.bm-row-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-top-color: #63b3ed;
+    border-radius: 50%;
+    animation: bm-spin 0.6s linear infinite;
+}
+
+/* â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-footer {
+    padding: 14px 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.15);
+}
+
+.bm-invite-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
-    width: 100%;
+    transition: filter 0.15s, transform 0.1s;
+}
+
+.bm-invite-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.bm-invite-btn:active { transform: translateY(0); }
+
+.bm-leave-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(239,68,68,0.10);
+    color: #fc8181;
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
 }
 
-.invite-button:hover {
-    background: #026aa7;
+.bm-leave-btn:hover { background: rgba(239,68,68,0.20); }
+
+/* â”€â”€ Toast Notifications â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bm-toast-stack {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    pointer-events: none;
+    z-index: 10;
+    width: max-content;
+    max-width: 400px;
 }
 
-/* Loading and Error States */
-.loading-state,
-.error-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: #5e6c84;
-    font-size: 15px;
+.bm-toast {
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    animation: bm-toast-in 0.25s ease;
+    white-space: nowrap;
 }
 
-.error-state {
-    color: #eb5a46;
+@keyframes bm-toast-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Scrollbar */
-.members-modal-content::-webkit-scrollbar {
-    width: 8px;
+.bm-toast-success {
+    background: rgba(34,197,94,0.18);
+    color: #86efac;
+    border: 1px solid rgba(34,197,94,0.3);
 }
 
-.members-modal-content::-webkit-scrollbar-track {
-    background: #f4f5f7;
-    border-radius: 4px;
+.bm-toast-error {
+    background: rgba(239,68,68,0.18);
+    color: #fc8181;
+    border: 1px solid rgba(239,68,68,0.3);
 }
 
-.members-modal-content::-webkit-scrollbar-thumb {
-    background: #c1c7d0;
-    border-radius: 4px;
+/* â”€â”€ Legacy classes kept for backward compat â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
 
-.members-modal-content::-webkit-scrollbar-thumb:hover {
-    background: #a5adba;
-}

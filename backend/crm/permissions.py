@@ -164,6 +164,7 @@ def get_effective_board_members(board):
         role = wm.role
         added_by_username = wm.added_by.username if wm.added_by else 'system'
         added_at = wm.added_at
+        source = 'workspace'
         
         # Check for board override
         if user.id in board_overrides:
@@ -171,11 +172,13 @@ def get_effective_board_members(board):
             role = bm.role
             added_by_username = bm.added_by.username if bm.added_by else added_by_username
             added_at = bm.added_at
+            source = 'board'
             
         effective_members.append({
             'id': user.id,
             'user': user,
             'role': role,
+            'source': source,
             'added_at': added_at,
             'added_by_username': added_by_username
         })
@@ -187,9 +190,11 @@ def get_effective_board_members(board):
                 'id': bm.user.id,
                 'user': bm.user,
                 'role': bm.role,
+                'source': 'board',
                 'added_at': bm.added_at,
                 'added_by_username': bm.added_by.username if bm.added_by else 'system'
             })
             
     return effective_members
+
 

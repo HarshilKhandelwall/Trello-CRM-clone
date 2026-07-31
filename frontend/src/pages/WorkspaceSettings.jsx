@@ -82,12 +82,13 @@ function WorkspaceSettings() {
         return () => { cancelled = true; };
     }, [searchQuery, members]);
 
-    async function handleAddMember() {
-        if (!selectedUserId) return;
+    async function handleAddMember(targetUserId) {
+        const userIdToAdd = targetUserId || selectedUserId || (searchResults.length > 0 ? String(searchResults[0].id) : null);
+        if (!userIdToAdd) return;
         setSubmitting(true);
         setActionError(null);
         try {
-            await workspaceMembers.add(workspaceId, Number(selectedUserId), selectedRole);
+            await workspaceMembers.add(workspaceId, Number(userIdToAdd), selectedRole);
             await loadData();
             setShowAddPanel(false);
             setSelectedUserId('');
@@ -95,7 +96,7 @@ function WorkspaceSettings() {
             setSearchQuery('');
             setSearchResults([]);
         } catch (err) {
-            setActionError(err.message || 'Failed to add member');
+            setActionError(err?.data?.error || err.message || 'Failed to add member');
         } finally {
             setSubmitting(false);
         }
@@ -208,16 +209,26 @@ function WorkspaceSettings() {
                                     {searchResults.length > 0 && (
                                         <div className="ws-search-results">
                                             {searchResults.map(u => (
-                                                <button
+                                                <div
                                                     key={u.id}
-                                                    type="button"
                                                     className={`ws-search-result-item ${selectedUserId === String(u.id) ? 'selected' : ''}`}
-                                                    onClick={() => { setSelectedUserId(String(u.id)); setSearchQuery(u.username); setSearchResults([]); }}
+                                                    onClick={() => { setSelectedUserId(String(u.id)); setSearchQuery(u.username); }}
                                                 >
                                                     <span className="material-icons">account_circle</span>
-                                                    <span className="ws-result-name">{u.username}</span>
-                                                    <span className="ws-result-email">{u.email}</span>
-                                                </button>
+                                                    <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                                                        <div className="ws-result-name">{u.username}</div>
+                                                        <div className="ws-result-email">{u.email}</div>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        className="ws-btn-primary"
+                                                        style={{ padding: '2px 10px', fontSize: '12px' }}
+                                                        onClick={(e) => { e.stopPropagation(); handleAddMember(String(u.id)); }}
+                                                        disabled={submitting}
+                                                    >
+                                                        Add
+                                                    </button>
+                                                </div>
                                             ))}
                                         </div>
                                     )}
@@ -232,7 +243,7 @@ function WorkspaceSettings() {
                                 </div>
                                 <div className="ws-add-actions">
                                     <button className="ws-btn-secondary" onClick={() => { setShowAddPanel(false); setSearchQuery(''); setSelectedUserId(''); setSearchResults([]); }} disabled={submitting}>Cancel</button>
-                                    <button className="ws-btn-primary" onClick={handleAddMember} disabled={submitting || !selectedUserId}>
+                                    <button className="ws-btn-primary" onClick={() => handleAddMember()} disabled={submitting || (!selectedUserId && searchResults.length === 0)}>
                                         {submitting ? 'Adding…' : 'Add Member'}
                                     </button>
                                 </div>
