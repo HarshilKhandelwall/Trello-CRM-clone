@@ -173,18 +173,21 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ── Email / OTP ────────────────────────────────────────────────────────────────
-# The hardcoded superadmin email that receives every login OTP.
-# ⚠️  Change this to your real email address before using.
+# The superadmin email address that receives every login OTP.
+# Set SUPERADMIN_OTP_EMAIL in your .env file (see .env.example).
 SUPERADMIN_OTP_EMAIL = os.environ.get('SUPERADMIN_OTP_EMAIL', 'superadmin@example.com')
 
-EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-# Set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD as environment variables,
-# or replace the second argument to os.environ.get() with your actual values.
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+# Always use the real SMTP backend so OTPs are emailed, not printed to the terminal.
+# Override via DJANGO_EMAIL_BACKEND env var only if you intentionally want console output (e.g. CI).
+EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+
+# ── SMTP credentials ──────────────────────────────────────────────────────────
+# Fill these in your .env file (see .env.example for the variable names).
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')          # e.g. smtp.gmail.com
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))                   # 587 for TLS, 465 for SSL
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')              # your sending address
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')      # app password / SMTP password
 # ── L-6 FIX: Provide a non-empty fallback to prevent SMTP 550 errors
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER if EMAIL_HOST_USER else 'noreply@trello-crm.local'
 
